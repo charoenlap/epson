@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 8000",
     "lint": "next lint",
     "sit": "cross-env NODE_ENV=sit CONFIG_ENV=env.sit.local next dev",
     "local": "cross-env NODE_ENV=local CONFIG_ENV=env.local next dev",

@@ -194,17 +194,17 @@ export default function IntrlligentDetail() {
               <Menu>
                 {itemsModel.map(item => (
                   <Menu.Item key={item.key}>
-                    <Link onClick={() => handleModelSelect(item.key)}>{item.label}</Link>
+                    <Button type="link" onClick={() => handleModelSelect(item.key)}>{item.label}</Button>
                   </Menu.Item>
                 ))}
               </Menu>
             }
           >
-            <Link onClick={e => e.preventDefault()}>
+            <Button type="link" onClick={e => e.preventDefault()}>
               <Space>
                 Select <DownOutlined />
               </Space>
-            </Link>
+            </Button>
           </Dropdown>
           {selectedModel && (
             <p>Selected Model: {selectedModel}</p>
