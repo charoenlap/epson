@@ -13,10 +13,6 @@ import { Breadcrumb,Menu } from 'antd';
 import { Layout,theme,  } from 'antd';
 import { LaptopOutlined, NotificationOutlined } from '@ant-design/icons';
 import { DownloadOutlined } from '@ant-design/icons';
-import { useRecoilState } from 'recoil';
-import { selectModel2State } from '@/store/data';
-import MyModel2 from '@/components/myModel2';
-import Link from 'next/link';
 const { Search } = Input;
 const { Content,Sider  } = Layout;
 function getItem(label, key, icon, children) {
@@ -29,22 +25,22 @@ function getItem(label, key, icon, children) {
 }
 const items2 = [
   getItem(
-      <Link href="/intrlligentDetail">Data Analytic</Link>,
+      <a href="/intrlligentDetail">Data Analytic</a>,
       'intrlligentDetail',
       <UserOutlined />,
     ),
     getItem(
-      <Link href="/checkErrorCode">Check Error Code</Link>,
+      <a href="/checkErrorCode">Check Error Code</a>,
       'checkErrorCode',
       <LaptopOutlined />,
     ),
     getItem(
-      <Link href="/nvram">NVRAM Viewer</Link>,
+      <a href="/nvram">NVRAM Viewer</a>,
       'nvram',
       <LaptopOutlined />,
     ),
     getItem(
-      <Link href="/serviceManual">Service Manual & Diagram</Link>,
+      <a href="/serviceManual">Service Manual & Diagram</a>,
       'serviceManual',
       <LaptopOutlined />,
     ),
@@ -68,7 +64,6 @@ const columns = [
 ];
 const data = [];
 export default function Index() {
-  const [selectModel2, setSelectModel2] = useRecoilState(selectModel2State)
   const [itemsModel, setItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   useEffect(() => {
@@ -117,7 +112,7 @@ export default function Index() {
               <Button type="primary" shape="round" icon={<DownloadOutlined />} size="large">
               Download
               </Button>
-            </Link>
+            </a>
           )}
         </Col>
       </Row>
