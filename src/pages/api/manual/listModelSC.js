@@ -8,10 +8,8 @@ export default async function handler(req, res) {
   try {
     const connection = await connectDb();
     const [logData] = await connection.query(
-      "SELECT * FROM `es_pt_model` WHERE `type`='LFP' ORDER BY `model_name`"
+      "SELECT `model_name`,`manual`,`diagram`,`nvram`,`type`,`subtype` FROM `es_pt_model` WHERE `type`='LFP' ORDER BY `model_name`"
     );
-
-
     return res.status(200).json(logData);
   } catch (error) {
     console.error('Error:', error);

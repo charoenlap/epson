@@ -12,10 +12,6 @@ import axios from 'axios';
 import { Breadcrumb,Menu } from 'antd';
 import { Layout,theme,  } from 'antd';
 import { LaptopOutlined, NotificationOutlined } from '@ant-design/icons';
-import MyModel2 from '@/components/myModel2';
-import { useRecoilState } from 'recoil';
-import { selectModel2State } from '@/store/data';
-import Link from 'next/link';
 const { Search } = Input;
 const { Content,Sider  } = Layout;
 function getItem(label, key, icon, children) {
@@ -28,22 +24,22 @@ function getItem(label, key, icon, children) {
 }
 const items2 = [
   getItem(
-      <Link href="/intrlligentDetail">Data Analytic</Link>,
+      <a href="/intrlligentDetail">Data Analytic</a>,
       'intrlligentDetail',
       <UserOutlined />,
     ),
     getItem(
-      <Link href="/checkErrorCode">Check Error Code</Link>,
+      <a href="/checkErrorCode">Check Error Code</a>,
       'checkErrorCode',
       <LaptopOutlined />,
     ),
     getItem(
-      <Link href="/nvram">NVRAM Viewer</Link>,
+      <a href="/nvram">NVRAM Viewer</a>,
       'nvram',
       <LaptopOutlined />,
     ),
     getItem(
-      <Link href="/serviceManual">Service Manual & Diagram</Link>,
+      <a href="/serviceManual">Service Manual & Diagram</a>,
       'serviceManual',
       <LaptopOutlined />,
     ),
@@ -53,22 +49,30 @@ const columns = [
     title: 'Symptom / Detail',
     dataIndex: 'symptom',
     key: 'symptom',
+    render: (text) => <div dangerouslySetInnerHTML={{ __html: text }} />
   },
   {
     title: 'Remedy',
     dataIndex: 'remedy',
     key: 'remedy',
+    render: (text) => <div dangerouslySetInnerHTML={{ __html: text }} />
   },
   {
     title: 'Part Code',
     dataIndex: 'part',
     key: 'part',
+    render: (text) => <div dangerouslySetInnerHTML={{ __html: text }} />
+  },
+  {
+    title: 'Desc',
+    dataIndex: 'desc',
+    key: 'desc',
+    render: (text) => <div dangerouslySetInnerHTML={{ __html: text }} />
   },
 ];
 const data = [];
 
 export default function Index() {
-  const [selectModel2, setSelectModel2] = useRecoilState(selectModel2State);
   const [itemsModel, setItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   useEffect(() => {
@@ -98,7 +102,7 @@ export default function Index() {
     setErrorCode(errorCode);
     try {
       const response = await axios.post('/api/errorCode/find', {
-        model: selectModel2?.model_name,
+        model: selectedItem,
         errorCode: errorCode,
       });
       const responseData = response.data.map(item => ({
@@ -106,6 +110,7 @@ export default function Index() {
         symptom: item.error_name,
         remedy: item.remedy,
         part: item.part_check,
+        desc: item.desc,
       }));
       setTableData(responseData);
     } catch (error) {
