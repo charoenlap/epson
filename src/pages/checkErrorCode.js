@@ -49,16 +49,25 @@ const columns = [
     title: 'Symptom / Detail',
     dataIndex: 'symptom',
     key: 'symptom',
+    render: (text) => <div dangerouslySetInnerHTML={{ __html: text }} />
   },
   {
     title: 'Remedy',
     dataIndex: 'remedy',
     key: 'remedy',
+    render: (text) => <div dangerouslySetInnerHTML={{ __html: text }} />
   },
   {
     title: 'Part Code',
     dataIndex: 'part',
     key: 'part',
+    render: (text) => <div dangerouslySetInnerHTML={{ __html: text }} />
+  },
+  {
+    title: 'Desc',
+    dataIndex: 'desc',
+    key: 'desc',
+    render: (text) => <div dangerouslySetInnerHTML={{ __html: text }} />
   },
 ];
 const data = [];
@@ -101,6 +110,7 @@ export default function Index() {
         symptom: item.error_name,
         remedy: item.remedy,
         part: item.part_check,
+        desc: item.desc,
       }));
       setTableData(responseData);
     } catch (error) {

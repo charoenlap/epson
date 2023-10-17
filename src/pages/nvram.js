@@ -108,7 +108,7 @@ export default function Index() {
       <Row justify="center" style={{ margin: '20px' }}>
         <Col span={20} style={{ margin: '10px' }}>
         {selectedItem && (
-            <a href={`upload/selectedItem/${selectedItem}`} target="_blank" rel="noopener noreferrer">
+            <a href={`upload/${selectedItem}`} target="_blank" rel="noopener noreferrer">
               <Button type="primary" shape="round" icon={<DownloadOutlined />} size="large">
               Download
               </Button>
