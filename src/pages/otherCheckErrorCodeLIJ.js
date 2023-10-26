@@ -14,6 +14,7 @@ import { Layout,theme,  } from 'antd';
 import { LaptopOutlined, NotificationOutlined } from '@ant-design/icons';
 const { Search } = Input;
 const { Content,Sider  } = Layout;
+import Link from 'next/link';
 function getItem(label, key, icon, children) {
   return {
     key,
@@ -24,12 +25,12 @@ function getItem(label, key, icon, children) {
 }
 const items2 = [
     getItem(
-      <a href="/otherCheckErrorCodeLIJ">Check Error Code</a>,
+      <Link href="/otherCheckErrorCodeLIJ">Check Error Code</Link>,
       'checkErrorCode',
       <LaptopOutlined />,
     ),
     getItem(
-      <a href="/otherServiceManualLIJ">Service Manual & Diagram</a>,
+      <Link href="/otherServiceManualLIJ">Service Manual & Diagram</Link>,
       'serviceManual',
       <LaptopOutlined />,
     ),
@@ -112,9 +113,9 @@ export default function Index() {
     <>
       <Row justify="center">
         <Col span={20} style={{ margin: '10px' }}>
-          <a href="/errorCode/WF-C21000_C20750_C20600_Rev.H_Manual/4898026.html" target="_blank">
+          <Link href="/errorCode/WF-C21000_C20750_C20600_Rev.H_Manual/4898026.html" target="_blank">
               <Button type="primary">Search error code</Button>
-          </a>
+          </Link>
         </Col>  
       </Row>
     </>

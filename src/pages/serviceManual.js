@@ -13,9 +13,7 @@ import { Breadcrumb,Menu } from 'antd';
 import { Layout,theme,  } from 'antd';
 import { LaptopOutlined, NotificationOutlined } from '@ant-design/icons';
 import { DownloadOutlined } from '@ant-design/icons';
-import MyModel2 from '@/components/myModel2';
-import { useRecoilState } from 'recoil';
-import { selectModel2State } from '@/store/data';
+import { Select } from 'antd';
 const { Search } = Input;
 const { Content,Sider  } = Layout;
 function getItem(label, key, icon, children) {
@@ -67,12 +65,31 @@ const columns = [
 ];
 const data = [];
 export default function Index() {
-  const [selectModel2, setSelectModel2] = useRecoilState(selectModel2State);
-  console.log(selectModel2)
   const [itemsModel, setItems] = useState([]);
-  const [manual, setSelectedManual] = useState(null);
-  const [diagram, setSelectedDiagram] = useState(null);
-  
+  const [selectedManual, setSelectedManual] = useState(null);
+  const [selectedDiagram, setSelectedDiagram] = useState(null);
+  const [selectedItem, setSelectedItem] = useState(null);
+  useEffect(() => {
+    fetch('/api/manual/listModelSC')
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        const transformedItems = data.map(item => ({
+          key: item.model_name,
+          label: item.model_name,
+          manual: item.manual,
+          diagram: item.diagram,
+        }));
+        setItems(transformedItems);
+      });
+  }, []);
+  const handleModelSelect = (value) => {
+    // Find the selected item and set the corresponding manual and diagram
+    const selectedItem = itemsModel.find(item => item.label === value);
+    setSelectedItem(value);
+    setSelectedManual(selectedItem.manual);
+    setSelectedDiagram(selectedItem.diagram);
+  };
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -81,30 +98,38 @@ export default function Index() {
     <>
       <Row justify="center">
         <Col span={20} style={{ margin: '10px' }}>
-          <p>
-            <b>Model</b>
-          </p>
-          <Space wrap>
-          {itemsModel.map(item => (
-              <Button key={item.key} type="primary" onClick={() => handleModelSelect(item.manual,item.diagram)}>{item.label}</Button>
-          ))}
-          </Space>
+          <Select
+            showSearch
+            style={{
+              width: 200,
+            }}
+            placeholder="Search to Select"
+            onChange={handleModelSelect}
+            value={selectedItem}
+          >
+            {itemsModel.map(item => (
+              <Select.Option key={item.key} value={item.label}>
+                {item.label}
+              </Select.Option>
+            ))}
+          </Select>
         </Col>
       </Row>
       <Row justify="center" style={{ margin: '20px' }}>
         <Col span={20} style={{ margin: '10px' }}>
-          {manual && (
-            <a href={`upload/manual/${manual}`} target="_blank" rel="noopener noreferrer">
+          {selectedManual && (
+            <a href={`upload/manual/${selectedManual}`} target="_blank" rel="noopener noreferrer">
               <Button type="primary" shape="round" icon={<DownloadOutlined />} size="large">
-                Service Manual {manual}
+                Service Manual {selectedManual}
               </Button>
             </a>
           )}
-
-          {diagram && (
-            <a href={`upload/diagram/${diagram}`} target="_blank" rel="noopener noreferrer">
+        </Col>
+        <Col span={20} style={{ margin: '10px' }}>
+          {selectedDiagram && (
+            <a href={`upload/diagram/${selectedDiagram}`} target="_blank" rel="noopener noreferrer">
               <Button type="primary" shape="round" icon={<DownloadOutlined />} size="large">
-                Diagram {diagram}
+                Diagram {selectedDiagram}
               </Button>
             </a>
           )}

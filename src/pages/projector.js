@@ -14,8 +14,9 @@ import { LaptopOutlined, NotificationOutlined } from '@ant-design/icons';
 import { Table, Tag } from 'antd';
 import { Select } from 'antd';
 import { Modal } from 'antd';
-
+import Link from 'next/link';
 const { Content,Sider  } = Layout;
+const {Option} = Select;
 function getItem(label, key, icon, children) {
   return {
     key,
@@ -27,12 +28,12 @@ function getItem(label, key, icon, children) {
 
 const items2 = [
   getItem(
-      <a href="/projector">Data Analytic</a>,
+      <Link href="/projector">Data Analytic</Link>,
       'intrlligentDetail',
       <UserOutlined />,
     ),
     getItem(
-      <a href="/projectorServiceManual">Service Manual & Diagram</a>,
+      <Link href="/projectorServiceManual">Service Manual & Diagram</Link>,
       'serviceManual',
       <LaptopOutlined />,
     ),
@@ -158,7 +159,11 @@ export default function Index() {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
-
+  
+  const handleReset = () => {
+    setResponseData([]);
+    setResponseDataDetail([]);
+  };
   return (
     <> 
       <Row justify="center">
@@ -181,6 +186,7 @@ export default function Index() {
               </Option>
             ))}
           </Select>
+          <Button type="primary" onClick={handleReset}>Reset</Button>
         </Col>
       </Row>
       <Row justify="center">

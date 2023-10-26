@@ -12,10 +12,7 @@ import { Breadcrumb,Menu } from 'antd';
 import { Layout,theme,  } from 'antd';
 import { LaptopOutlined, NotificationOutlined } from '@ant-design/icons';
 import { Table, Tag } from 'antd';
-import MyModel2 from '@/components/myModel2';
-import { useRecoilState } from 'recoil';
-import { models2State, selectModel2State } from '@/store/data';
-
+import { Select } from 'antd';
 const { Content,Sider  } = Layout;
 function getItem(label, key, icon, children) {
   return {
@@ -179,23 +176,24 @@ const propsCalculate = {
   method: 'post',
 };
 export default function Index() {
-  const [selectModel2, setSelectModel2] = useRecoilState(selectModel2State);
+  const [selectedItem, setSelectedItem] = useState();
   const [itemsModel, setItems] = useState([]);
   const [selectedModel, setSelectedModel] = useState("");
-  // useEffect(() => {
-  //   fetch('/api/manual/listModelSC')
-  //     .then(response => response.json())
-  //     .then(data => {
-  //       const transformedItems = data.map(item => ({
-  //         key: item.model_name,
-  //         label: item.model_name,
-  //       }));
-  //       setItems(transformedItems);
-  //     });
-  // }, []);
+  useEffect(() => {
+    fetch('/api/manual/listModelSC')
+      .then(response => response.json())
+      .then(data => {
+        const transformedItems = data.map(item => ({
+          key: item.model_name,
+          label: item.model_name,
+        }));
+        setItems(transformedItems);
+      });
+  }, []);
   
   const handleModelSelect = model => {
     setSelectedModel(model);
+    console.log(model);
     // setSelectedModel([...selectedModel, model]);
   };
 
@@ -205,7 +203,7 @@ export default function Index() {
   const [errorDataTable, setTableData] = useState([]);
   const handleUpload = async (file) => {
     try {
-      if (_.isEmpty(selectModel2)) {
+      if (selectedModel === "") {
         // Show an error message using Ant Design message.error
         message.error("Please select a model before uploading.");
         return; // Exit the function
@@ -223,13 +221,13 @@ export default function Index() {
         // console.log(response.data.data);
         setResponseData(response.data.data);
         setErrorData(response.data.errorData);
-        console.log(selectModel2);
+        console.log(selectedModel);
         console.log(response.data.errorData[0].symptom);
         let symptomResponse = response.data.errorData[0].symptom;
         try {
           
           const responseErr = await axios.post('/api/errorCode/find', {
-            model: selectModel2?.model_name,
+            model: selectedModel,
             errorCode: symptomResponse,
           });
           console.log(responseErr);
@@ -267,33 +265,32 @@ export default function Index() {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
+  const handleReset = () => {
+    setResponseData([]);
+    setErrorData([]);
+    setTableData([]);
+    setSelectedItem('');
+  };
   return (
     <>
       <Row justify="center">
-        <Col span={20} style={{ margin: '10px' }}>
-          <p>
-            <b>Model</b>
-          </p>
-          <Dropdown
-            overlay={
-              <Menu>
-                {itemsModel.map(item => (
-                  <Menu.Item key={item.key}>
-                    <a onClick={() => handleModelSelect(item.key)}>{item.label}</a>
-                  </Menu.Item>
-                ))}
-              </Menu>
-            }
+        <Col span={20} style={{ marginTop: '10px' }}>
+          <Select
+            showSearch
+            style={{
+              width: 200,
+            }}
+            placeholder="Search to Select"
+            onChange={handleModelSelect}
+            value={selectedItem}
           >
-            <a onClick={e => e.preventDefault()}>
-              <Space>
-                Select <DownOutlined />
-              </Space>
-            </a>
-          </Dropdown>
-          {selectedModel && (
-            <p>Selected Model: {selectedModel}</p>
-          )}
+            {itemsModel.map(item => (
+              <Option key={item.key} value={item.key}>
+                {item.label}
+              </Option>
+            ))}
+          </Select>
+          <Button type="primary" onClick={handleReset}>Reset</Button>
         </Col>
       </Row>
       <Row justify="center">

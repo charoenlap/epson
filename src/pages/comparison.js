@@ -7,6 +7,7 @@ import { apiClient } from '@/utils/apiClient';
 import { useRouter } from 'next/router';
 import MyModel from "@/components/myModel";
 import { selectModelState } from '@/store/data';
+import Link from 'next/link';
 const { Content,Sider  } = Layout;
 const { Meta } = Card;
 function getItem(label, key, icon, children) {
@@ -21,20 +22,20 @@ const items = [
     {
       key: '1',
       label: (
-        <a target="_blank" rel="#" href="#">
+        <Link target="_blank" rel="#" href="#">
           Model
-        </a>
+        </Link>
       ),
     },
   ];
   const items2 = [
     getItem(
-        <a href="/specification">Specification</a>,
+        <Link href="/specification">Specification</Link>,
         'specification',
         <UserOutlined />,
       ),
       getItem(
-        <a href="/comparison">Comparison</a>,
+        <Link href="/comparison">Comparison</Link>,
         'comparison',
         <LaptopOutlined />,
       ),
