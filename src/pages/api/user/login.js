@@ -2,11 +2,11 @@ import { encode, decode } from '../../../utils/encryption';
 import { connectDb } from '../../../utils/db'; // We'll define this utility later
 
 export default async function handler(req, res) {
-
+  const connection = await connectDb();
   try {
     const {method,data,params} = decode(req.body)
   
-    const connection = await connectDb();
+    
     // // console.log(connection)
     const [user] = await connection.query(
       'SELECT * FROM ep_users WHERE username = ? AND password = ? AND status = "active"',
@@ -28,5 +28,7 @@ export default async function handler(req, res) {
   } catch (error) {
     // console.error('Error:', error);
     // return res.status(500).json({ error: 'Server error' });
+  }finally {
+    connection.release(); // Release the connection back to the pool
   }
 }

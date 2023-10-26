@@ -13,6 +13,7 @@ import { Breadcrumb,Menu } from 'antd';
 import { Layout,theme,  } from 'antd';
 import { LaptopOutlined, NotificationOutlined } from '@ant-design/icons';
 import { DownloadOutlined } from '@ant-design/icons';
+import { Select } from 'antd';
 const { Search } = Input;
 const { Content,Sider  } = Layout;
 function getItem(label, key, icon, children) {
@@ -23,45 +24,6 @@ function getItem(label, key, icon, children) {
     label,
   };
 }
-const items2 = [
-  getItem(
-      <a href="/intrlligentDetail">Data Analytic</a>,
-      'intrlligentDetail',
-      <UserOutlined />,
-    ),
-    getItem(
-      <a href="/checkErrorCode">Check Error Code</a>,
-      'checkErrorCode',
-      <LaptopOutlined />,
-    ),
-    getItem(
-      <a href="/nvram">NVRAM Viewer</a>,
-      'nvram',
-      <LaptopOutlined />,
-    ),
-    getItem(
-      <a href="/serviceManual">Service Manual & Diagram</a>,
-      'serviceManual',
-      <LaptopOutlined />,
-    ),
-];
-const columns = [
-  {
-    title: 'Symptom / Detail',
-    dataIndex: 'symptom',
-    key: 'symptom',
-  },
-  {
-    title: 'Remedy',
-    dataIndex: 'remedy',
-    key: 'remedy',
-  },
-  {
-    title: 'Part Code',
-    dataIndex: 'part',
-    key: 'part',
-  },
-];
 const data = [];
 export default function Index() {
   const [itemsModel, setItems] = useState([]);
@@ -92,23 +54,27 @@ export default function Index() {
     <>
       <Row justify="center">
         <Col span={20} style={{ margin: '10px' }}>
-          <p>
-            <b>Model</b>
-          </p>
-          <Space wrap>
+          <Select
+            showSearch
+            style={{
+              width: 200,
+            }}
+            placeholder="Search to Select"
+            onChange={handleModelSelect}
+            value={selectedItem}
+          >
             {itemsModel.map(item => (
-              <Button type="primary" key={item.key} 
-              onClick={() => handleModelSelect(item.nvram)} >
+              <Select.Option key={item.key} value={item.label}>
                 {item.label}
-              </Button>
+              </Select.Option>
             ))}
-          </Space>
+          </Select>
         </Col>
       </Row>
       <Row justify="center" style={{ margin: '20px' }}>
         <Col span={20} style={{ margin: '10px' }}>
         {selectedItem && (
-            <a href={`upload/${selectedItem}`} target="_blank" rel="noopener noreferrer">
+            <a href={`upload/nvram/${selectedItem}.zip`} target="_blank" rel="noopener noreferrer">
               <Button type="primary" shape="round" icon={<DownloadOutlined />} size="large">
               Download
               </Button>

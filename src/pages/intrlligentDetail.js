@@ -12,7 +12,7 @@ import { Breadcrumb,Menu } from 'antd';
 import { Layout,theme,  } from 'antd';
 import { LaptopOutlined, NotificationOutlined } from '@ant-design/icons';
 import { Table, Tag } from 'antd';
-
+import { Select } from 'antd';
 const { Content,Sider  } = Layout;
 function getItem(label, key, icon, children) {
   return {
@@ -176,6 +176,7 @@ const propsCalculate = {
   method: 'post',
 };
 export default function Index() {
+  const [selectedItem, setSelectedItem] = useState();
   const [itemsModel, setItems] = useState([]);
   const [selectedModel, setSelectedModel] = useState("");
   useEffect(() => {
@@ -192,6 +193,7 @@ export default function Index() {
   
   const handleModelSelect = model => {
     setSelectedModel(model);
+    console.log(model);
     // setSelectedModel([...selectedModel, model]);
   };
 
@@ -263,33 +265,32 @@ export default function Index() {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
+  const handleReset = () => {
+    setResponseData([]);
+    setErrorData([]);
+    setTableData([]);
+    setSelectedItem('');
+  };
   return (
     <>
       <Row justify="center">
-        <Col span={20} style={{ margin: '10px' }}>
-          <p>
-            <b>Model</b>
-          </p>
-          <Dropdown
-            overlay={
-              <Menu>
-                {itemsModel.map(item => (
-                  <Menu.Item key={item.key}>
-                    <a onClick={() => handleModelSelect(item.key)}>{item.label}</a>
-                  </Menu.Item>
-                ))}
-              </Menu>
-            }
+        <Col span={20} style={{ marginTop: '10px' }}>
+          <Select
+            showSearch
+            style={{
+              width: 200,
+            }}
+            placeholder="Search to Select"
+            onChange={handleModelSelect}
+            value={selectedItem}
           >
-            <a onClick={e => e.preventDefault()}>
-              <Space>
-                Select <DownOutlined />
-              </Space>
-            </a>
-          </Dropdown>
-          {selectedModel && (
-            <p>Selected Model: {selectedModel}</p>
-          )}
+            {itemsModel.map(item => (
+              <Option key={item.key} value={item.key}>
+                {item.label}
+              </Option>
+            ))}
+          </Select>
+          <Button type="primary" onClick={handleReset}>Reset</Button>
         </Col>
       </Row>
       <Row justify="center">

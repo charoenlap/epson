@@ -10,9 +10,9 @@ export default async function handler(req, res) {
   if (!username || !password) {
     return res.status(400).json({ error: 'Username and password are required' });
   }
-
+  const connection = await connectDb();
   try {
-    const connection = await connectDb();
+    
     const [user] = await connection.query(
       'SELECT * FROM ep_users WHERE username = ? AND password = ? LIMIT 1',
       [username, password]
@@ -30,5 +30,7 @@ export default async function handler(req, res) {
   } catch (error) {
     console.error('Error:', error);
     return res.status(500).json({ error: 'Server error' });
+  }finally {
+    connection.release(); // Release the connection back to the pool
   }
 }

@@ -14,6 +14,7 @@ import { Layout,theme,  } from 'antd';
 import { LaptopOutlined, NotificationOutlined } from '@ant-design/icons';
 const { Search } = Input;
 const { Content,Sider  } = Layout;
+import { Select } from 'antd';
 function getItem(label, key, icon, children) {
   return {
     key,
@@ -122,18 +123,21 @@ export default function Index() {
     <>
       <Row justify="center">
         <Col span={20} style={{ margin: '10px' }}>
-          <p>
-            <b>Model</b>
-          </p>
-          <Space wrap>
+          <Select
+            showSearch
+            style={{
+              width: 200,
+            }}
+            placeholder="Search to Select"
+            onChange={handleModelSelect}
+            value={selectedItem}
+          >
             {itemsModel.map(item => (
-              <Button key={item.key} type={selectedItem === item.label ? 'warning' : 'primary'} 
-              onClick={() => handleModelSelect(item.label)}
-              className={selectedItem === item.label ? 'warning-button' : ''} >
+              <Select.Option key={item.key} value={item.label}>
                 {item.label}
-              </Button>
+              </Select.Option>
             ))}
-          </Space>
+          </Select>
         </Col>  
       </Row>
       <Row justify="center">
@@ -144,6 +148,7 @@ export default function Index() {
             size="large"
             // Handle the input value as needed
             onChange={(e) => handleModelSelectModel(e.target.value)}
+            // onSearch={(e) => handleModelSelectModel(e.target.value)}
             value={errorCode}
           />
         </Col>
