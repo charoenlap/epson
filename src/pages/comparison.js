@@ -60,7 +60,7 @@ const Comparison = () => {
     const renderSelect = () => <Select 
                                     filterOption={filterOption}
                                     options={optionSeriesRemaining} 
-                                    placeholder="Modal" 
+                                    placeholder="Model" 
                                     showSearch 
                                     style={{width:'100%'}} />
     
@@ -190,7 +190,7 @@ const Comparison = () => {
                 <Select 
                     filterOption={filterOption}
                     options={optionSeriesRemaining} 
-                    placeholder="Modal" 
+                    placeholder="Model" 
                     showSearch 
                     style={{width:'100%'}} />
             </Form.Item>

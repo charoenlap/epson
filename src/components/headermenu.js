@@ -10,7 +10,7 @@ const HeaderMenu = () => {
         display: "flex",
         alignItems: "center",
         padding: '0 30px',
-        background: '#19499C',
+        background: '#231f20',
         color: '#fff'
       }}
     >
