@@ -14,7 +14,7 @@ export default async function handler(req, res) {
 
   const iconv = require('iconv-lite');
   let fileContent;
-
+  const logData = [];
   const errorData = [];
   const informationData = [];
   const connection = await connectDb();
@@ -39,11 +39,9 @@ export default async function handler(req, res) {
     let total_op = '';
     let lamp_on = 0;
     let lamp_off = 0;
-
+    // find lamp 
     for (let i = 0; i < lines.length - 1; i++) {
-      const previousLine = lines[i -1];
       const currentLine = lines[i];
-      const nextLine = lines[i + 1];
 
       if(currentLine.includes("Total Op.Time")){
         const pattern = /"(\d+h \d+m \d+s)"/;
@@ -66,44 +64,75 @@ export default async function handler(req, res) {
           lamp_off = match[1];
         }
       }
-      for (const error of result_query) {
-        const prefixMatch = currentLine.includes(error.error_code_prefix);
-        const postfixMatch =
-          error.error_code_postfix === '' || nextLine.includes(error.error_code_postfix);
-        if (prefixMatch && postfixMatch) {
-          no++;
-          const pattern = /T (\d+h\d+m\d+s)/;
-          const match = previousLine.match(pattern);
-          let timeString = '';
-          if (match) {
-            timeString = match[1];
-          }
-          errorData.push({
-            key: no,
-            no: timeString,
-            symptom: error.behavior,
-            remedy: error.part,
-            part: error.part_code,
-          });
-          break_loop = true;
-          break;
-        }
-      }
-      if(break_loop){
-        break;
-      }
     }
     if(total_op.length){
       informationData.push({key:0,item:'Total Operation Time',currentValue:total_op});
       informationData.push({key:1,item:'Lamp ON Counter',currentValue:lamp_on});
       informationData.push({key:2,item:'Lamp OFF Counter',currentValue:lamp_off});
     }
+    // find error
+    for (let i = 0; i < lines.length - 1; i++) {
+      const previousLine = lines[i -1];
+      const currentLine = lines[i];
+      const nextLine = lines[i + 1];
+      let listErrorDetect = "";
+      const searchText = "ERR";
+      const searchText2 = "Error Log1 (Latest)";
+      if (currentLine.includes(searchText) || currentLine.includes(searchText2)) {
+        listErrorDetect = currentLine;
+      }
+      if(listErrorDetect!=''){
+        for (const error of result_query) {
+          const prefixMatch = currentLine.includes(error.error_code_prefix);
+          const postfixMatchCurrent = currentLine.includes(error.error_code_postfix);
+          const postfixMatch = error.error_code_postfix === '' || nextLine.includes(error.error_code_postfix);
+          logData.push({
+            prefixMatch: prefixMatch,
+            postfixMatch: postfixMatch,
+            currentLine:currentLine
+          });
+          if ((prefixMatch && postfixMatch) || (prefixMatch && postfixMatchCurrent)) {
+            const searchText = "[ERR]";
+            const searchText2 = "Error Log1 (Latest)";
+            // logData.push({
+            //   currentLine: currentLine,
+            //   previousLine: previousLine,
+            //   nextLine:nextLine,
+            //   error_code_prefix: error.error_code_prefix
+            // });
+            if (currentLine.includes(searchText) || currentLine.includes(searchText2)) {
+              no += 1;
+              const pattern = /T (\d+h\d+m\d+s)/;
+              const match = previousLine.match(pattern);
+              let timeString = '';
+              if (match) {
+                timeString = match[1];
+              }
+              errorData.push({
+                key: no,
+                no: timeString,
+                symptom: error.behavior,
+                remedy: error.part,
+                part: error.part_code,
+              });
+              break_loop = true;
+              break;
+            }
+          }
+        }
+        if(break_loop){
+          break;
+        }
+      }
+    }
+    
+    console.log(logData);
     res.status(200).json({ uploadedFileName: filename, errorData: errorData, information: informationData });
   } catch (error) {
     console.error('Error:', error);
     return res.status(500).json({ error: 'Server error' });
   }finally {
-    connection.release(); // Release the connection back to the pool
+    // connection.release(); 
   }
 
 }
