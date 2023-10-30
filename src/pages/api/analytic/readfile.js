@@ -75,6 +75,8 @@ export default async function handler(req, res) {
       const previousLine = lines[i -1];
       const currentLine = lines[i];
       const nextLine = lines[i + 1];
+      const nextLine2 = lines[i + 2];
+      const nextLine3 = lines[i + 3];
       let listErrorDetect = "";
       const searchText = "ERR";
       const searchText2 = "Error Log1 (Latest)";
@@ -86,27 +88,42 @@ export default async function handler(req, res) {
           const prefixMatch = currentLine.includes(error.error_code_prefix);
           const postfixMatchCurrent = currentLine.includes(error.error_code_postfix);
           const postfixMatch = error.error_code_postfix === '' || nextLine.includes(error.error_code_postfix);
-          logData.push({
-            prefixMatch: prefixMatch,
-            postfixMatch: postfixMatch,
-            currentLine:currentLine
-          });
+          // logData.push({
+          //   prefixMatch: prefixMatch,
+          //   postfixMatch: postfixMatch,
+          //   currentLine:currentLine
+          // });
           if ((prefixMatch && postfixMatch) || (prefixMatch && postfixMatchCurrent)) {
             const searchText = "[ERR]";
             const searchText2 = "Error Log1 (Latest)";
-            // logData.push({
-            //   currentLine: currentLine,
-            //   previousLine: previousLine,
-            //   nextLine:nextLine,
-            //   error_code_prefix: error.error_code_prefix
-            // });
+            logData.push({
+              currentLine: currentLine,
+              previousLine: previousLine,
+              nextLine:nextLine,
+              nextLine2:nextLine2,
+              nextLine3:nextLine3,
+              error_code_prefix: error.error_code_prefix
+            });
             if (currentLine.includes(searchText) || currentLine.includes(searchText2)) {
               no += 1;
               const pattern = /T (\d+h\d+m\d+s)/;
+              const pattern2 = /\t"(\d{4}h \d{2}m \d{2}s)"/;
               const match = previousLine.match(pattern);
               let timeString = '';
               if (match) {
                 timeString = match[1];
+              }
+              const match1 = nextLine.match(pattern);
+              if (match1) {
+                timeString = match[1];
+              }
+              const match2 = nextLine2.match(pattern);
+              if (match2) {
+                timeString = match[1];
+              }
+              const match3 = nextLine3.match(pattern2);
+              if (match3 && match3[1]) {
+                timeString = match3[1];
               }
               errorData.push({
                 key: no,
