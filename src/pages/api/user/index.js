@@ -31,6 +31,6 @@ export default async function handler(req, res) {
     console.error('Error:', error);
     // return res.status(500).json({ error: 'Server error' });
   }finally {
-    connection.release(); // Release the connection back to the pool
+    connection.end();; // Release the connection back to the pool
   }
 }
