@@ -33,7 +33,7 @@ export default function Index() {
     const filterOption = (input, option) => {
         let inputLow = _.join(_.split(_.lowerCase(input),' '),'');
         let labelLow = _.join(_.split(_.lowerCase(option?.label),' '),'');
-        return _.startsWith(labelLow, inputLow) ||inputLow==labelLow
+        return _.startsWith(labelLow, inputLow) || inputLow==labelLow || labelLow.indexOf(inputLow) !== -1
     }
 
 	const onValuesChange = async (change, all) => {
@@ -70,7 +70,6 @@ export default function Index() {
 				})
 				temp = _.uniqBy(temp, 'label')
 				temp = _.orderBy(temp, 'label', 'asc')
-				console.log(temp,'temp')
 				setOptionSeries(temp)
 			}
 			if (listFile) {

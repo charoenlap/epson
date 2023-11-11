@@ -211,7 +211,7 @@ const Specification = () => {
 					</Descriptions>
                 </Col>
             </Row>
-            <Row gutter={[12, 12]}>
+            {/* <Row gutter={[12, 12]}>
                 <Col span={3}><h3 style={{margin:0}}>Specs / Product</h3></Col>
                 <Col span={21}>
 					<Descriptions column={1}>
@@ -223,7 +223,7 @@ const Specification = () => {
 						</Descriptions.Item>
 					</Descriptions>
                 </Col>
-            </Row>
+            </Row> */}
             <Row gutter={[12,12]}>
                 <Col span={3}><h3 style={{margin:0}}>Link Brochure</h3></Col>
                 <Col span={21}>

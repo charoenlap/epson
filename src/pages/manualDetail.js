@@ -111,7 +111,7 @@ export default function Index() {
 						placeholder="Search Model"
 						showSearch
 						allowClear
-						style={{ width: "auto", minWidth: '200px' }}
+						style={{ width: "100%" }}
 					/>
 				</Form.Item>
 			</Form>

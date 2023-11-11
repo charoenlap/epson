@@ -235,8 +235,8 @@ const Comparison = () => {
             </Col>
             <Col span={12} style={{textAlign:'right'}}>
                 <Space>
-                    <Button onClick={async()=>await resetAll()}>Reset</Button>
-                    <Button disabled={_.size(tableColumn)>=6} onClick={()=>addColumn()}>Add Column</Button>
+                    <Button danger onClick={async()=>await resetAll()}>Reset</Button>
+                    <Button type="primary" disabled={_.size(tableColumn)>=6} onClick={()=>addColumn()}>Add Column</Button>
                 </Space>
             </Col>
         </Row>
