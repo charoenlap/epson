@@ -12,12 +12,9 @@ import axios from 'axios';
 import { Breadcrumb,Menu } from 'antd';
 import { Layout,theme,  } from 'antd';
 import { LaptopOutlined, NotificationOutlined } from '@ant-design/icons';
-import MyModel2 from '@/components/myModel2';
-import { useRecoilState } from 'recoil';
-import { selectModel2State } from '@/store/data';
-import Link from 'next/link';
 const { Search } = Input;
 const { Content,Sider  } = Layout;
+import { Select } from 'antd';
 function getItem(label, key, icon, children) {
   return {
     key,
@@ -28,61 +25,71 @@ function getItem(label, key, icon, children) {
 }
 const items2 = [
   getItem(
-      <Link href="/intrlligentDetail">Data Analytic</Link>,
+      <a href="/intrlligentDetail">Data Analytic</a>,
       'intrlligentDetail',
       <UserOutlined />,
     ),
     getItem(
-      <Link href="/checkErrorCode">Check Error Code</Link>,
+      <a href="/checkErrorCode">Check Error Code</a>,
       'checkErrorCode',
       <LaptopOutlined />,
     ),
     getItem(
-      <Link href="/nvram">NVRAM Viewer</Link>,
+      <a href="/nvram">NVRAM Viewer</a>,
       'nvram',
       <LaptopOutlined />,
     ),
     getItem(
-      <Link href="/serviceManual">Service Manual & Diagram</Link>,
+      <a href="/serviceManual">Service Manual & Diagram</a>,
       'serviceManual',
       <LaptopOutlined />,
     ),
 ];
 const columns = [
   {
-    title: 'Symptom / Detail',
+    title: 'Error Name',
     dataIndex: 'symptom',
     key: 'symptom',
+    render: (text) => <div dangerouslySetInnerHTML={{ __html: text }} />
+  },
+  {
+    title: 'Part to be check',
+    dataIndex: 'part',
+    key: 'part',
+    render: (text) => <div dangerouslySetInnerHTML={{ __html: text }} />
+  },
+  {
+    title: 'Description',
+    dataIndex: 'desc',
+    key: 'desc',
+    render: (text) => <div dangerouslySetInnerHTML={{ __html: text }} />
   },
   {
     title: 'Remedy',
     dataIndex: 'remedy',
     key: 'remedy',
-  },
-  {
-    title: 'Part Code',
-    dataIndex: 'part',
-    key: 'part',
+    render: (text) => <div dangerouslySetInnerHTML={{ __html: text }} />
   },
 ];
 const data = [];
 
 export default function Index() {
-  const [selectModel2, setSelectModel2] = useRecoilState(selectModel2State);
   const [itemsModel, setItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   useEffect(() => {
-    fetch('/api/manual/listModelSC')
+    fetch('/api/manual/listModelLfp')
       .then(response => response.json())
       .then(data => {
         console.log(data);
-        const transformedItems = data.map(item => ({
-          key: item.model_name,
-          label: item.model_name,
-          manual: item.manual,
-          diagram: item.diagram,
-        }));
-        setItems(transformedItems);
+        if(data){
+          const transformedItems = data.map(item => ({
+            key: item.model_name,
+            label: item.model_name,
+            manual: item.manual,
+            diagram: item.diagram,
+          }));
+          setItems(transformedItems);
+        }
       });
   }, []);
   const handleModelSelect = item => {
@@ -98,7 +105,7 @@ export default function Index() {
     setErrorCode(errorCode);
     try {
       const response = await axios.post('/api/errorCode/find', {
-        model: selectModel2?.model_name,
+        model: selectedItem,
         errorCode: errorCode,
       });
       const responseData = response.data.map(item => ({
@@ -106,6 +113,7 @@ export default function Index() {
         symptom: item.error_name,
         remedy: item.remedy,
         part: item.part_check,
+        desc: item.desc,
       }));
       setTableData(responseData);
     } catch (error) {
@@ -113,22 +121,30 @@ export default function Index() {
     }
     
   };
+  const handleReset = () => {
+    setTableData([]);
+    handleModelSelectModel([]);
+  };
   return (
     <>
       <Row justify="center">
         <Col span={20} style={{ margin: '10px' }}>
-          <p>
-            <b>Model</b>
-          </p>
-          <Space wrap>
+          <Select
+            showSearch
+            style={{
+              width: 200,
+            }}
+            placeholder="Search to Select"
+            onChange={handleModelSelect}
+            value={selectedItem}
+          >
             {itemsModel.map(item => (
-              <Button key={item.key} type={selectedItem === item.label ? 'warning' : 'primary'} 
-              onClick={() => handleModelSelect(item.label)}
-              className={selectedItem === item.label ? 'warning-button' : ''} >
+              <Select.Option key={item.key} value={item.label}>
                 {item.label}
-              </Button>
+              </Select.Option>
             ))}
-          </Space>
+          </Select>
+          <Button type="primary" onClick={handleReset}>Reset</Button>
         </Col>  
       </Row>
       <Row justify="center">
@@ -139,6 +155,7 @@ export default function Index() {
             size="large"
             // Handle the input value as needed
             onChange={(e) => handleModelSelectModel(e.target.value)}
+            // onSearch={(e) => handleModelSelectModel(e.target.value)}
             value={errorCode}
           />
         </Col>

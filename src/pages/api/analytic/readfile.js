@@ -14,68 +14,117 @@ export default async function handler(req, res) {
 
   const iconv = require('iconv-lite');
   let fileContent;
-
+  const logData = [];
   const errorData = [];
   const informationData = [];
+  const connection = await connectDb();
   try {
-    const connection = await connectDb();
-        const [result_query] = await connection.query(
-          'SELECT * FROM es_pt_log WHERE model = ?',
-          [model]
-        );
-        if (result_query.length === 0) {
-          return res.status(401).json({ error: 'Invalid credentials' });
+
+    const [result_query] = await connection.query(
+      'SELECT * FROM es_pt_log WHERE model = ?',
+      [model]
+    );
+    if (result_query.length === 0) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+    if (fileBuffer[0] === 0xFF && fileBuffer[1] === 0xFE) {
+      fileContent = iconv.decode(fileBuffer, 'utf16le');
+    } else {
+      fileContent = fileBuffer.toString('utf-8');
+    }
+    const lines = fileContent.split('\n');
+    let break_loop = false;
+    let no = 0;
+
+    let total_op = '';
+    let lamp_on = 0;
+    let lamp_off = 0;
+    // find lamp 
+    for (let i = 0; i < lines.length - 1; i++) {
+      const currentLine = lines[i];
+
+      if(currentLine.includes("Total Op.Time")){
+        const pattern = /"(\d+h \d+m \d+s)"/;
+        const match = currentLine.match(pattern);
+        if (match) {
+          total_op = match[1];
         }
-        if (fileBuffer[0] === 0xFF && fileBuffer[1] === 0xFE) {
-          fileContent = iconv.decode(fileBuffer, 'utf16le');
-        } else {
-          fileContent = fileBuffer.toString('utf-8');
+      }
+      if(currentLine.includes("Lamp ON Counter")){
+        const pattern = /"(\d+)"/;
+        const match = currentLine.match(pattern);
+        if (match) {
+          lamp_on = match[1];
         }
-        const lines = fileContent.split('\n');
-        let break_loop = false;
-        let no = 0;
-
-        let total_op = '';
-        let lamp_on = 0;
-        let lamp_off = 0;
-
-        for (let i = 0; i < lines.length - 1; i++) {
-          const previousLine = lines[i -1];
-          const currentLine = lines[i];
-          const nextLine = lines[i + 1];
-
-          if(currentLine.includes("Total Op.Time")){
-            const pattern = /"(\d+h \d+m \d+s)"/;
-            const match = currentLine.match(pattern);
-            if (match) {
-              total_op = match[1];
-            }
-          }
-          if(currentLine.includes("Lamp ON Counter")){
-            const pattern = /"(\d+)"/;
-            const match = currentLine.match(pattern);
-            if (match) {
-              lamp_on = match[1];
-            }
-          }
-          if(currentLine.includes("Lamp OFF Counter")){
-            const pattern = /"(\d+)"/;
-            const match = currentLine.match(pattern);
-            if (match) {
-              lamp_off = match[1];
-            }
-          }
-          for (const error of result_query) {
-            const prefixMatch = currentLine.includes(error.error_code_prefix);
-            const postfixMatch =
-              error.error_code_postfix === '' || nextLine.includes(error.error_code_postfix);
-            if (prefixMatch && postfixMatch) {
-              no++;
+      }
+      if(currentLine.includes("Lamp OFF Counter")){
+        const pattern = /"(\d+)"/;
+        const match = currentLine.match(pattern);
+        if (match) {
+          lamp_off = match[1];
+        }
+      }
+    }
+    if(total_op.length){
+      informationData.push({key:0,item:'Total Operation Time',currentValue:total_op});
+      informationData.push({key:1,item:'Lamp ON Counter',currentValue:lamp_on});
+      informationData.push({key:2,item:'Lamp OFF Counter',currentValue:lamp_off});
+    }
+    // find error
+    for (let i = 0; i < lines.length - 1; i++) {
+      const previousLine = lines[i -1];
+      const currentLine = lines[i];
+      const nextLine = lines[i + 1];
+      const nextLine2 = lines[i + 2];
+      const nextLine3 = lines[i + 3];
+      let listErrorDetect = "";
+      const searchText = "ERR";
+      const searchText2 = "Error Log1 (Latest)";
+      if (currentLine.includes(searchText) || currentLine.includes(searchText2)) {
+        listErrorDetect = currentLine;
+      }
+      if(listErrorDetect!=''){
+        for (const error of result_query) {
+          const prefixMatch = currentLine.includes(error.error_code_prefix);
+          const postfixMatchCurrent = currentLine.includes(error.error_code_postfix);
+          const postfixMatch = error.error_code_postfix === '' || nextLine.includes(error.error_code_postfix);
+          // logData.push({
+          //   prefixMatch: prefixMatch,
+          //   postfixMatch: postfixMatch,
+          //   currentLine:currentLine
+          // });
+          if ((prefixMatch && postfixMatch) || (prefixMatch && postfixMatchCurrent)) {
+            const searchText = "[ERR]";
+            const searchText2 = "Error Log1 (Latest)";
+            const searchText3 = "[WAR]";
+            logData.push({
+              currentLine: currentLine,
+              previousLine: previousLine,
+              nextLine:nextLine,
+              nextLine2:nextLine2,
+              nextLine3:nextLine3,
+              error_code_prefix: error.error_code_prefix
+            });
+            if (currentLine.includes(searchText) || currentLine.includes(searchText2) || currentLine.includes(searchText3)) {
+              no += 1;
               const pattern = /T (\d+h\d+m\d+s)/;
+              const pattern2 = /\t"(\d{4}h \d{2}m \d{2}s)"/;
               const match = previousLine.match(pattern);
               let timeString = '';
               if (match) {
                 timeString = match[1];
+              }
+              const match1 = nextLine.match(pattern);
+              if (match1) {
+                timeString = match[1];
+              }
+              const match2 = nextLine2.match(pattern);
+              if (match2) {
+                timeString = match[1];
+              }
+              const match3 = nextLine3.match(pattern2);
+              if (match3 && match3[1]) {
+                timeString = match3[1];
               }
               errorData.push({
                 key: no,
@@ -88,19 +137,20 @@ export default async function handler(req, res) {
               break;
             }
           }
-          if(break_loop){
-            break;
-          }
         }
-        if(total_op.length){
-          informationData.push({key:0,item:'Total Operation Time',currentValue:total_op});
-          informationData.push({key:1,item:'Lamp ON Counter',currentValue:lamp_on});
-          informationData.push({key:2,item:'Lamp OFF Counter',currentValue:lamp_off});
+        if(break_loop){
+          break;
         }
-        res.status(200).json({ uploadedFileName: filename, errorData: errorData, information: informationData });
-      } catch (error) {
-        console.error('Error:', error);
-        return res.status(500).json({ error: 'Server error' });
       }
+    }
+    
+    console.log(logData);
+    res.status(200).json({ uploadedFileName: filename, errorData: errorData, information: informationData });
+  } catch (error) {
+    console.error('Error:', error);
+    return res.status(500).json({ error: 'Server error' });
+  }finally {
+    // connection.end();; 
+  }
 
 }

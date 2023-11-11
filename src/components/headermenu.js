@@ -1,6 +1,7 @@
 import React from 'react'
 import { HomeOutlined } from '@ant-design/icons';
 import { Layout, theme, Menu } from "antd";
+import{  Image  } from 'antd';
 const { Header } = Layout;
 
 const HeaderMenu = () => {
@@ -10,12 +11,12 @@ const HeaderMenu = () => {
         display: "flex",
         alignItems: "center",
         padding: '0 30px',
-        background: '#19499C',
+        background: '#231f20',
         color: '#fff'
       }}
     >
       {/* <div className="demo-logo" /> */}
-      <h1>EPSON</h1>
+      <Image alt="example" preview={false} src="../../../images/logo.png" width={100}/>
       {/* <Menu
         theme="dark"
         mode="horizontal"

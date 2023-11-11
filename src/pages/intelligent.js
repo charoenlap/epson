@@ -15,13 +15,14 @@ export default function index() {
         </Row>
         <Row justify="center">
             <Col span={5}  style={{ margin: '10px' }}>
-                <Link href="/intrlligentDetail" >
+                <Link href="/intrlligentDetail?subtype=SC-F" >
                     <Card
                         hoverable
                         style={{
                             textAlign: 'center',
                         }}
-                        cover={<Image alt="example" src="images/lfp1.png" />}
+                        cover={<Image alt="" preview={false} src="images/lfp1.png"/>}
+                        
                     >
                         <div style={{ marginTop: 'auto' }}>
                             <Meta title="SC-F Series" description="" />
@@ -30,13 +31,13 @@ export default function index() {
                 </Link>
             </Col>
             <Col span={5}  style={{ margin: '10px' }}>
-                <Link href="/intrlligentDetail">
+                <Link href="/intrlligentDetail?subtype=SC-P">
                     <Card
                         hoverable
                         style={{
                         textAlign: 'center',
                         }}
-                        cover={<Image alt="example" src="images/lfp2.png" />}
+                        cover={<Image alt="example" preview={false} src="images/lfp2.png" />}
                     >
                         <div style={{ marginTop: 'auto' }}>
                             <Meta title="SC-P Series" description="" />
@@ -45,13 +46,13 @@ export default function index() {
                 </Link>
             </Col>
             <Col span={5}  style={{ margin: '10px' }}>
-                <Link href="/intrlligentDetail">
+                <Link href="/intrlligentDetail?subtype=SC-S">
                     <Card
                         hoverable
                         style={{
                         textAlign: 'center',
                         }}
-                        cover={<Image alt="example" src="images/lfp3.png" />}
+                        cover={<Image alt="example" preview={false} src="images/lfp3.png" />}
                     >
                         <div style={{ marginTop: 'auto' }}>
                             <Meta title="SC-S Series" description="" />
@@ -60,16 +61,16 @@ export default function index() {
                 </Link>
             </Col>
             <Col span={5}  style={{ margin: '10px' }}>
-                <Link href="/intrlligentDetail">
+                <Link href="/intrlligentDetail?subtype=SC-D">
                     <Card
                         hoverable
                         style={{
                         textAlign: 'center',
                         }}
-                        cover={<Image alt="example" src="images/lfp4.png" />}
+                        cover={<Image alt="example" preview={false} src="images/lfp4.png" />}
                     >
                         <div style={{ marginTop: 'auto' }}>
-                            <Meta title="SC-S Series" description="" />
+                            <Meta title="SC-D Series" description="" />
                         </div>
                     </Card>
                 </Link>
@@ -88,7 +89,7 @@ export default function index() {
                         style={{
                             textAlign: 'center',
                         }}
-                        cover={<Image alt="example" src="images/p1.png" />}
+                        cover={<Image alt="example" preview={false} src="images/p1.png" />}
                     >
                         <div style={{ marginTop: 'auto' }}>
                             <Meta title="Projector" description="" />
@@ -103,7 +104,7 @@ export default function index() {
                         style={{
                         textAlign: 'center',
                         }}
-                        cover={<Image alt="example" src="images/p2.png" />}
+                        cover={<Image alt="example" preview={false} src="images/p2.png" />}
                     >
                         <div style={{ marginTop: 'auto' }}>
                             <Meta title="LIJ" description="" />
@@ -118,7 +119,7 @@ export default function index() {
                         style={{
                         textAlign: 'center',
                         }}
-                        cover={<Image alt="example" src="images/p3.png" />}
+                        cover={<Image alt="example" preview={false} src="images/p3.png" />}
                     >
                         <div style={{ marginTop: 'auto' }}>
                             <Meta title="RIPs" description="" />

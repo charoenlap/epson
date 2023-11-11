@@ -159,7 +159,11 @@ export default function Index() {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
-
+  
+  const handleReset = () => {
+    setResponseData([]);
+    setResponseDataDetail([]);
+  };
   return (
     <> 
       <Row justify="center">
@@ -182,6 +186,7 @@ export default function Index() {
               </Option>
             ))}
           </Select>
+          <Button type="primary" onClick={handleReset}>Reset</Button>
         </Col>
       </Row>
       <Row justify="center">

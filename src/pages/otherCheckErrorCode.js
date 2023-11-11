@@ -13,6 +13,7 @@ import { Breadcrumb,Menu } from 'antd';
 import { Layout,theme,  } from 'antd';
 import { LaptopOutlined, NotificationOutlined } from '@ant-design/icons';
 import Link from 'next/link';
+import { Select } from 'antd';
 const { Search } = Input;
 const { Content,Sider  } = Layout;
 function getItem(label, key, icon, children) {
@@ -37,30 +38,31 @@ const items2 = [
 ];
 const columns = [
   {
-    title: 'Symptom / Detail',
+    title: 'Error Name',
     dataIndex: 'symptom',
     key: 'symptom',
+    render: (text) => <div dangerouslySetInnerHTML={{ __html: text }} />
+  },
+  {
+    title: 'Part to be check',
+    dataIndex: 'part',
+    key: 'part',
+    render: (text) => <div dangerouslySetInnerHTML={{ __html: text }} />
+  },
+  {
+    title: 'Description ',
+    dataIndex: 'desc',
+    key: 'desc',
+    render: (text) => <div dangerouslySetInnerHTML={{ __html: text }} />
   },
   {
     title: 'Remedy',
     dataIndex: 'remedy',
     key: 'remedy',
-  },
-  {
-    title: 'Part Code',
-    dataIndex: 'part',
-    key: 'part',
+    render: (text) => <div dangerouslySetInnerHTML={{ __html: text }} />
   },
 ];
-const data = [
-  {
-    key: '1',
-    no: '1',
-    symptom: 'Total Print 136,000 ㎡',
-    remedy: 'Replace Print Head',
-    part: 'FA61002 “Print Head”',
-  },
-];
+const data = [];
 
 export default function Index() {
   const [itemsModel, setItems] = useState([]);
@@ -102,6 +104,7 @@ export default function Index() {
         symptom: item.error_name,
         remedy: item.remedy,
         part: item.part_check,
+        desc: item.desc,
       }));
       setTableData(responseData);
     } catch (error) {
@@ -109,22 +112,30 @@ export default function Index() {
     }
     
   };
+  const handleReset = () => {
+    setTableData([]);
+    handleModelSelectModel([]);
+  };
   return (
     <>
       <Row justify="center">
           <Col span={20} style={{ margin: '10px' }}>
-            <p>
-              <b>Model</b>
-            </p>
-            <Space wrap>
+            <Select
+              showSearch
+              style={{
+                width: 200,
+              }}
+              placeholder="Search to Select"
+              onChange={handleModelSelect}
+              value={selectedItem}
+            >
               {itemsModel.map(item => (
-                <Button key={item.key} type={selectedItem === item.label ? 'warning' : 'primary'} 
-                onClick={() => handleModelSelect(item.label)}
-                className={selectedItem === item.label ? 'warning-button' : ''} >
+                <Select.Option key={item.key} value={item.label}>
                   {item.label}
-                </Button>
+                </Select.Option>
               ))}
-            </Space>
+            </Select>
+            <Button type="primary" onClick={handleReset}>Reset</Button>
           </Col>  
         </Row>
         <Row justify="center">

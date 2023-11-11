@@ -156,7 +156,7 @@ const Specification = () => {
 							<Select
 								filterOption={filterOption}
 								options={optionSeries}
-								placeholder="Specification Modal"
+								placeholder="Specification Model"
 								showSearch
 								style={{ width: "100%" }}
 							/>
@@ -230,13 +230,13 @@ const Specification = () => {
                     <Space.Compact style={{ width: '50%' }}>
                         <Input disabled={_.isEmpty(spec?.brochure)} type="text" value={spec?.brochure} />
                         <Button disabled={_.isEmpty(spec?.brochure)} type="default" onClick={()=>{
-                            navigator.clipboard.writeText(spec.brochure)
+                            navigator?.clipboard?.writeText(spec.brochure)
                             message.success('Copy Success')
                         }}>Copy</Button>
                     </Space.Compact>
                 </Col>
                 <Col span={24} offset={3}>
-                    <Button href={spec?.brochure} download disabled={_.isEmpty(spec?.brochure)}>Download</Button>
+                    <Button href={spec?.brochure} target="new" download disabled={_.isEmpty(spec?.brochure)}>Download</Button>
                 </Col>
             </Row>
             <Row gutter={[12,12]}>

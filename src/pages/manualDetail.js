@@ -108,7 +108,7 @@ export default function Index() {
 					<Select
 						filterOption={filterOption}
 						options={optionSeries}
-						placeholder="Search Modal"
+						placeholder="Search Model"
 						showSearch
 						allowClear
 						style={{ width: "auto", minWidth: '200px' }}

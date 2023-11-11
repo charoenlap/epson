@@ -77,12 +77,14 @@ const Sidebar = () => {
                     { key: 'knowledgebase', label: 'Knowledge Base', href: '/knowledgeBase' },
                 ] },
                 { key: 'dataanalytics', label: 'Data Analytics LFP', children: [
+                    { key: 'listdataanalytic', label: 'List Model Analytic', href: '/intelligent'},
                     { key: 'dataanalytic', label: 'Data Analytic', href: '/intrlligentDetail'},
                     { key: 'checkerrorcode', label: 'Check Error Code', href: '/checkErrorCode'},
                     { key: 'nvram', label: 'NVRAM Viewer', href: '/nvram' },
                     { key: 'servicemanual', label: 'Service Manual & Diagram', href: '/serviceManual' },
                 ] },
                 { key:'divider', type: 'divider' },
+                { key: 'logout', label: 'Logout', href: '/auth/logout' },
             ]);
         }else if (router.pathname === '/projector' || router.pathname === '/projectorServiceManual') {
             setItems([
@@ -94,10 +96,12 @@ const Sidebar = () => {
                     { key: 'knowledgebase', label: 'Knowledge Base', href: '/knowledgeBase' },
                 ] },
                 { key: 'dataanalytics', label: 'Data Analytics Projector', children: [
+                    { key: 'listdataanalytic', label: 'List Model Analytic', href: '/intelligent'},
                     { key: 'dataanalytic', label: 'Data Analytic', href: '/projector'},
                     { key: 'servicemanual', label: 'Service Manual & Diagram', href: '/projectorServiceManual' },
                 ] },
                 { key:'divider', type: 'divider' },
+                { key: 'logout', label: 'Logout', href: '/auth/logout' },
             ]);
         }else if (router.pathname === '/otherCheckErrorCodeLIJ' || router.pathname === '/otherServiceManualLIJ') {
             setItems([
@@ -109,10 +113,12 @@ const Sidebar = () => {
                     { key: 'knowledgebase', label: 'Knowledge Base', href: '/knowledgeBase' },
                 ] },
                 { key: 'dataanalytics', label: 'Data Analytics LIJ', children: [
+                    { key: 'listdataanalytic', label: 'List Model Analytic', href: '/intelligent'},
                     { key: 'checkerrorcode', label: 'Check Error Code', href: '/otherCheckErrorCodeLIJ'},
                     { key: 'servicemanual', label: 'Service Manual & Diagram', href: '/otherServiceManualLIJ' },
                 ] }, 
                 { key:'divider', type: 'divider' },
+                { key: 'logout', label: 'Logout', href: '/auth/logout' },
             ]);
         }else if (router.pathname === '/otherCheckErrorCode' || router.pathname === '/otherServiceManual') {
             setItems([
@@ -124,10 +130,12 @@ const Sidebar = () => {
                     { key: 'knowledgebase', label: 'Knowledge Base', href: '/knowledgeBase' },
                 ] },
                 { key: 'dataanalytics', label: 'Data Analytics RIPs', children: [
+                    { key: 'listdataanalytic', label: 'List Model Analytic', href: '/intelligent'},
                     { key: 'checkerrorcode', label: 'Check Error Code', href: '/otherCheckErrorCode'},
                     { key: 'servicemanual', label: 'Service Manual & Diagram', href: '/otherServiceManual' },
                 ] },
                 { key:'divider', type: 'divider' },
+                { key: 'logout', label: 'Logout', href: '/auth/logout' },
             ]);
         }else{
             setItems([
