@@ -44,7 +44,7 @@ const Datacenter = () => {
 								setSelectModel(val);
 								router.push('/specification')
 							}} style={{width:'100%'}}>
-								<Card cover={<img alt={val.id} src={"images/m"+val.id+".png"} />}>
+								<Card cover={<img alt={val.id} src={"images/m"+val.id+".png"} width={200}/>}>
 									<Meta title={val.model_name} />
 								</Card>
 							</Button>
