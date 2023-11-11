@@ -13,6 +13,7 @@ import { Layout,theme,  } from 'antd';
 import { LaptopOutlined, NotificationOutlined } from '@ant-design/icons';
 import { Table, Tag } from 'antd';
 import { Select } from 'antd';
+import { useRouter } from 'next/router';
 const { Content,Sider  } = Layout;
 function getItem(label, key, icon, children) {
   return {
@@ -179,8 +180,13 @@ export default function Index() {
   const [selectedItem, setSelectedItem] = useState();
   const [itemsModel, setItems] = useState([]);
   const [selectedModel, setSelectedModel] = useState("");
+  const router = useRouter();
+  const { subtype } = router.query;
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   useEffect(() => {
-    fetch('/api/manual/listModelSC')
+    setLoading(true);
+    fetch(`/api/manual/listModelSC?subtype=${subtype}`)
       .then(response => response.json())
       .then(data => {
         const transformedItems = data.map(item => ({
@@ -189,7 +195,7 @@ export default function Index() {
         }));
         setItems(transformedItems);
       });
-  }, []);
+  }, [subtype]);
   
   const handleModelSelect = model => {
     setSelectedModel(model);
