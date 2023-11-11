@@ -96,6 +96,7 @@ export default async function handler(req, res) {
           if ((prefixMatch && postfixMatch) || (prefixMatch && postfixMatchCurrent)) {
             const searchText = "[ERR]";
             const searchText2 = "Error Log1 (Latest)";
+            const searchText3 = "[WAR]";
             logData.push({
               currentLine: currentLine,
               previousLine: previousLine,
@@ -104,7 +105,7 @@ export default async function handler(req, res) {
               nextLine3:nextLine3,
               error_code_prefix: error.error_code_prefix
             });
-            if (currentLine.includes(searchText) || currentLine.includes(searchText2)) {
+            if (currentLine.includes(searchText) || currentLine.includes(searchText2) || currentLine.includes(searchText3)) {
               no += 1;
               const pattern = /T (\d+h\d+m\d+s)/;
               const pattern2 = /\t"(\d{4}h \d{2}m \d{2}s)"/;
