@@ -77,17 +77,19 @@ export default function Index() {
   const [itemsModel, setItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   useEffect(() => {
-    fetch('/api/manual/listModelSC')
+    fetch('/api/manual/listModelLfp')
       .then(response => response.json())
       .then(data => {
         console.log(data);
-        const transformedItems = data.map(item => ({
-          key: item.model_name,
-          label: item.model_name,
-          manual: item.manual,
-          diagram: item.diagram,
-        }));
-        setItems(transformedItems);
+        if(data){
+          const transformedItems = data.map(item => ({
+            key: item.model_name,
+            label: item.model_name,
+            manual: item.manual,
+            diagram: item.diagram,
+          }));
+          setItems(transformedItems);
+        }
       });
   }, []);
   const handleModelSelect = item => {
@@ -119,6 +121,10 @@ export default function Index() {
     }
     
   };
+  const handleReset = () => {
+    setTableData([]);
+    handleModelSelectModel([]);
+  };
   return (
     <>
       <Row justify="center">
@@ -138,6 +144,7 @@ export default function Index() {
               </Select.Option>
             ))}
           </Select>
+          <Button type="primary" onClick={handleReset}>Reset</Button>
         </Col>  
       </Row>
       <Row justify="center">
