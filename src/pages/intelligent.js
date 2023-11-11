@@ -15,7 +15,7 @@ export default function index() {
         </Row>
         <Row justify="center">
             <Col span={5}  style={{ margin: '10px' }}>
-                <Link href="/intrlligentDetail" >
+                <Link href="/intrlligentDetail?subtype=SC-F" >
                     <Card
                         hoverable
                         style={{
@@ -31,7 +31,7 @@ export default function index() {
                 </Link>
             </Col>
             <Col span={5}  style={{ margin: '10px' }}>
-                <Link href="/intrlligentDetail">
+                <Link href="/intrlligentDetail?subtype=SC-P">
                     <Card
                         hoverable
                         style={{
@@ -46,7 +46,7 @@ export default function index() {
                 </Link>
             </Col>
             <Col span={5}  style={{ margin: '10px' }}>
-                <Link href="/intrlligentDetail">
+                <Link href="/intrlligentDetail?subtype=SC-S">
                     <Card
                         hoverable
                         style={{
@@ -61,7 +61,7 @@ export default function index() {
                 </Link>
             </Col>
             <Col span={5}  style={{ margin: '10px' }}>
-                <Link href="/intrlligentDetail">
+                <Link href="/intrlligentDetail?subtype=SC-D">
                     <Card
                         hoverable
                         style={{
@@ -70,7 +70,7 @@ export default function index() {
                         cover={<Image alt="example" preview={false} src="images/lfp4.png" />}
                     >
                         <div style={{ marginTop: 'auto' }}>
-                            <Meta title="SC-S Series" description="" />
+                            <Meta title="SC-D Series" description="" />
                         </div>
                     </Card>
                 </Link>
