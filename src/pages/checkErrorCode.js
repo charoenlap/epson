@@ -47,27 +47,27 @@ const items2 = [
 ];
 const columns = [
   {
-    title: 'Symptom / Detail',
+    title: 'Error Name',
     dataIndex: 'symptom',
     key: 'symptom',
+    render: (text) => <div dangerouslySetInnerHTML={{ __html: text }} />
+  },
+  {
+    title: 'Part to be check',
+    dataIndex: 'part',
+    key: 'part',
+    render: (text) => <div dangerouslySetInnerHTML={{ __html: text }} />
+  },
+  {
+    title: 'Description',
+    dataIndex: 'desc',
+    key: 'desc',
     render: (text) => <div dangerouslySetInnerHTML={{ __html: text }} />
   },
   {
     title: 'Remedy',
     dataIndex: 'remedy',
     key: 'remedy',
-    render: (text) => <div dangerouslySetInnerHTML={{ __html: text }} />
-  },
-  {
-    title: 'Part Code',
-    dataIndex: 'part',
-    key: 'part',
-    render: (text) => <div dangerouslySetInnerHTML={{ __html: text }} />
-  },
-  {
-    title: 'Desc',
-    dataIndex: 'desc',
-    key: 'desc',
     render: (text) => <div dangerouslySetInnerHTML={{ __html: text }} />
   },
 ];
