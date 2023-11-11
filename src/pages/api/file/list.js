@@ -14,6 +14,7 @@ export default async function handler(req, res) {
         if (params?.series) {
           files = _.filter(files, f => _.startsWith(f, params.series))
         }
+        console.log('files', files)
         res.status(200).json({data: encode(files)})
     } else {
         res.status(405).send('Method not allowed')
