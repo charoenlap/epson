@@ -182,9 +182,11 @@ export default function Index() {
   const [selectedModel, setSelectedModel] = useState("");
   const router = useRouter();
   const { subtype } = router.query;
-
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   useEffect(() => {
-    fetch('/api/manual/listModelSC?subtype='+subtype)
+    setLoading(true);
+    fetch(`/api/manual/listModelSC?subtype=${subtype}`)
       .then(response => response.json())
       .then(data => {
         const transformedItems = data.map(item => ({
@@ -193,7 +195,7 @@ export default function Index() {
         }));
         setItems(transformedItems);
       });
-  }, []);
+  }, [subtype]);
   
   const handleModelSelect = model => {
     setSelectedModel(model);
