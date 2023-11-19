@@ -16,6 +16,107 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `ep_permissions`
+--
+
+DROP TABLE IF EXISTS `ep_permissions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ep_permissions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `permission` varchar(255) DEFAULT NULL,
+  `status` enum('active','inactive') DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ep_permissions`
+--
+
+LOCK TABLES `ep_permissions` WRITE;
+/*!40000 ALTER TABLE `ep_permissions` DISABLE KEYS */;
+INSERT INTO `ep_permissions` VALUES (1,'All Access','*','active');
+/*!40000 ALTER TABLE `ep_permissions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ep_role_of_permission`
+--
+
+DROP TABLE IF EXISTS `ep_role_of_permission`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ep_role_of_permission` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `role_id` int(11) DEFAULT NULL,
+  `permission_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ep_role_of_permission`
+--
+
+LOCK TABLES `ep_role_of_permission` WRITE;
+/*!40000 ALTER TABLE `ep_role_of_permission` DISABLE KEYS */;
+INSERT INTO `ep_role_of_permission` VALUES (1,1,1);
+/*!40000 ALTER TABLE `ep_role_of_permission` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ep_roles`
+--
+
+DROP TABLE IF EXISTS `ep_roles`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ep_roles` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `name` varchar(255) DEFAULT NULL,
+  `status` enum('active','inactive') DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ep_roles`
+--
+
+LOCK TABLES `ep_roles` WRITE;
+/*!40000 ALTER TABLE `ep_roles` DISABLE KEYS */;
+INSERT INTO `ep_roles` VALUES (1,'Root','active'),(2,'tesst','active');
+/*!40000 ALTER TABLE `ep_roles` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ep_user_of_role`
+--
+
+DROP TABLE IF EXISTS `ep_user_of_role`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ep_user_of_role` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) DEFAULT NULL,
+  `role_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ep_user_of_role`
+--
+
+LOCK TABLES `ep_user_of_role` WRITE;
+/*!40000 ALTER TABLE `ep_user_of_role` DISABLE KEYS */;
+INSERT INTO `ep_user_of_role` VALUES (1,2,1),(2,2,2),(3,3,1);
+/*!40000 ALTER TABLE `ep_user_of_role` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `ep_users`
 --
 
@@ -31,7 +132,7 @@ CREATE TABLE `ep_users` (
   `fail_attempt` int(11) DEFAULT 0,
   `status` enum('active','inactive','lock','changepassword') DEFAULT 'inactive',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -317,6 +418,40 @@ LOCK TABLES `es_token` WRITE;
 /*!40000 ALTER TABLE `es_token` DISABLE KEYS */;
 /*!40000 ALTER TABLE `es_token` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Temporary table structure for view `view_name`
+--
+
+DROP TABLE IF EXISTS `view_name`;
+/*!50001 DROP VIEW IF EXISTS `view_name`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE VIEW `view_name` AS SELECT
+ 1 AS `user_Id`,
+  1 AS `username`,
+  1 AS `role_id`,
+  1 AS `role_name`,
+  1 AS `permission_id`,
+  1 AS `permission_name`,
+  1 AS `permission` */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Final view structure for view `view_name`
+--
+
+/*!50001 DROP VIEW IF EXISTS `view_name`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED DEFINER=`` SQL SECURITY DEFINER VIEW `view_name` AS select `u`.`id` AS `user_Id`,`u`.`username` AS `username`,`r`.`id` AS `role_id`,`r`.`name` AS `role_name`,`ep`.`id` AS `permission_id`,`ep`.`name` AS `permission_name`,`ep`.`permission` AS `permission` from ((((`ep_users` `u` left join `ep_user_of_role` `er` on(`er`.`user_id` = `u`.`id`)) left join `ep_roles` `r` on(`r`.`id` = `er`.`role_id`)) left join `ep_role_of_permission` `erop` on(`er`.`role_id` = `erop`.`role_id`)) left join `ep_permissions` `ep` on(`erop`.`permission_id` = `ep`.`id`)) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -327,4 +462,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-10-11  1:09:15
+-- Dump completed on 2023-11-19 22:07:51

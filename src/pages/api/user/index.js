@@ -5,7 +5,14 @@ export default async function handler(req, res) {
   const connection = await connectDb();
   try {
     const {method,data,params} = decode(req.body)
-    if (method=='post') {
+    if (method=='get') {
+      let sql = 'SELECT username,status FROM ep_users';
+      const [result] = await connection.query(sql, null, (err,results) => {
+        console.error(err);
+        console.log(results);
+      })
+      res.status(200).json({data:encode(result)});
+    } else if (method=='post') {
       
       const [user] = await connection.query(
         'SELECT * FROM ep_users WHERE username = ?',

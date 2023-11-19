@@ -3,12 +3,12 @@ import { SessionProvider } from "next-auth/react";
 import { ConfigProvider, Layout, theme, Typography } from "antd";
 import { RecoilRoot, RecoilEnv } from "recoil";
 import "@/styles/globals.css";
-const { Content } = Layout;
-import HeaderMenu from "@/components/headermenu";
-import Sidebar from "@/components/sidebar";
-import Breadcrumbs from "@/components/breadcrumbs";
+
 import { useRouter } from "next/router";
 import _ from "lodash";
+import DefaultLayout from '@/components/defaultLayout'
+import AdminLayout from '@/components/adminLayout'
+import BlankLayout from '@/components/blankLayout'
 
 RecoilEnv.RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED = false;
 
@@ -21,18 +21,10 @@ export default function App({
 		token: { colorBgContainer },
 	} = theme.useToken();
 	const router = useRouter();
+	const isUnderAdminSection = router.pathname.startsWith('/admin');
+	const isExactAdminRoute = router.pathname === '/admin' || router.pathname === '/admin/index';
+	const LayoutComponent = isUnderAdminSection ? (isExactAdminRoute ? BlankLayout : AdminLayout) : DefaultLayout;
 
-	const checkPathAuth = () => {
-		if (_.includes(_.split(router.pathname, "/"), "auth")) {
-			setIsAuth(false);
-		} else {
-			setIsAuth(true);
-		}
-	};
-
-	useEffect(() => {
-		checkPathAuth();
-	}, [router]);
 
 	return (
 		<SessionProvider session={session}>
@@ -50,7 +42,10 @@ export default function App({
 				}}
 			>
 				<RecoilRoot>
-					<Layout>
+					<LayoutComponent>
+						<Component {...pageProps} />
+					</LayoutComponent>
+					{/* <Layout>
 						<HeaderMenu />
 						<Layout>
 							{isAuth && <Sidebar />}
@@ -78,7 +73,7 @@ export default function App({
 								</Content>
 							</Layout>
 						</Layout>
-					</Layout>
+					</Layout> */}
 				</RecoilRoot>
 			</ConfigProvider>
 		</SessionProvider>
