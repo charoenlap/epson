@@ -27,8 +27,11 @@ CREATE TABLE `ep_permissions` (
   `name` varchar(255) DEFAULT NULL,
   `permission` varchar(255) DEFAULT NULL,
   `status` enum('active','inactive') DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `del` int(11) DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -37,7 +40,7 @@ CREATE TABLE `ep_permissions` (
 
 LOCK TABLES `ep_permissions` WRITE;
 /*!40000 ALTER TABLE `ep_permissions` DISABLE KEYS */;
-INSERT INTO `ep_permissions` VALUES (1,'All Access','*','active');
+INSERT INTO `ep_permissions` VALUES (1,'all','*','active',NULL,NULL,0),(2,'Specification','/specification','active','2023-11-20 17:04:08',NULL,0);
 /*!40000 ALTER TABLE `ep_permissions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -77,6 +80,9 @@ CREATE TABLE `ep_roles` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
   `name` varchar(255) DEFAULT NULL,
   `status` enum('active','inactive') DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `del` int(11) DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -87,7 +93,7 @@ CREATE TABLE `ep_roles` (
 
 LOCK TABLES `ep_roles` WRITE;
 /*!40000 ALTER TABLE `ep_roles` DISABLE KEYS */;
-INSERT INTO `ep_roles` VALUES (1,'Root','active'),(2,'tesst','active');
+INSERT INTO `ep_roles` VALUES (1,'root','active',NULL,NULL,0),(2,'DataCenter','active','2023-11-20 16:55:27','2023-11-20 17:04:46',0);
 /*!40000 ALTER TABLE `ep_roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -103,7 +109,7 @@ CREATE TABLE `ep_user_of_role` (
   `user_id` int(11) DEFAULT NULL,
   `role_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -112,7 +118,7 @@ CREATE TABLE `ep_user_of_role` (
 
 LOCK TABLES `ep_user_of_role` WRITE;
 /*!40000 ALTER TABLE `ep_user_of_role` DISABLE KEYS */;
-INSERT INTO `ep_user_of_role` VALUES (1,2,1),(2,2,2),(3,3,1);
+INSERT INTO `ep_user_of_role` VALUES (1,1,1);
 /*!40000 ALTER TABLE `ep_user_of_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -131,8 +137,11 @@ CREATE TABLE `ep_users` (
   `date_changepassword` date DEFAULT NULL,
   `fail_attempt` int(11) DEFAULT 0,
   `status` enum('active','inactive','lock','changepassword') DEFAULT 'inactive',
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `del` int(11) DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -141,7 +150,7 @@ CREATE TABLE `ep_users` (
 
 LOCK TABLES `ep_users` WRITE;
 /*!40000 ALTER TABLE `ep_users` DISABLE KEYS */;
-INSERT INTO `ep_users` VALUES (2,'admin','deb1ff9a51a8abed75caf4578c64b9b9b32c93fcb8084c484e3a1684cb0d7afd','4ae96736bc192257213ac5972fc3ae2c','2023-10-10',0,'active'),(3,'test','5f37e649ae2b891d8961aaa5635e26c7a1b6be1548fceb4986dda5641836b733','fa80ce053360d324d241b77347ca58e9','2023-10-11',0,'active');
+INSERT INTO `ep_users` VALUES (1,'admin','bc62588cadd261181985070f850be4e10979241b9df9c476e7e35ff4f726bc52','9c4eac6dd44a0f850e17a85e76ceb850','2023-11-21',0,'active',NULL,'2023-11-20 16:35:12',0),(4,'asdf',NULL,NULL,NULL,0,'active','2023-11-20 16:44:30',NULL,1),(5,'xcxccxv',NULL,NULL,NULL,0,'active','2023-11-20 16:54:15',NULL,1),(6,'mg',NULL,NULL,NULL,0,'active','2023-11-20 17:17:14',NULL,0);
 /*!40000 ALTER TABLE `ep_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -462,4 +471,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-11-19 22:07:51
+-- Dump completed on 2023-11-21  0:35:20

@@ -1,5 +1,5 @@
 import { apiClient } from "@/utils/apiClient";
-import { Table, Row, Col, Button, Dropdown, Input, Form, Select, Modal, message, Badge, Tag } from "antd";
+import { Table, Row, Col, Button, Dropdown, Input, Form, Select, Modal, message, Transfer, Tag } from "antd";
 import React, { useEffect, useState } from "react";
 import { EditOutlined, DeleteOutlined, AppstoreAddOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import _ from "lodash";
@@ -7,7 +7,51 @@ import { useSetRecoilState, useResetRecoilState } from "recoil";
 import { initDrawerState, closeDrawerState } from "@/store/drawer";
 import dayjs from 'dayjs'
 
-const FormUser = ({ initialValues, onSubmit, mode, close }) => {
+const MapPermission = ({getPermissions, onSubmit, mode, close}) => {
+    const [mockData, setMockData] = useState([]);
+    const [targetKeys, setTargetKeys] = useState([]);
+    const getMock = async () => {
+        let result = await getPermissions();
+        console.log(result); 
+      setMockData(_.map(result, (v,k) => ({
+        key: v?.id,
+        title: v?.name,
+        description: v?.permission
+      })));
+    };
+    useEffect(() => {
+      getMock();
+    }, []);
+    useEffect(() => {
+      console.log(targetKeys,mockData);
+    }, [targetKeys,mockData])
+    
+    const filterOption = (inputValue, option) => option.description.indexOf(inputValue) > -1;
+    const handleChange = (newTargetKeys) => {
+      setTargetKeys(newTargetKeys);
+    };
+    const handleSearch = (dir, value) => {
+      console.log('search:', dir, value);
+    };
+    return (
+        <Form>
+            <Form.Item>
+                <Transfer
+                    dataSource={mockData}
+                    showSearch
+                    filterOption={filterOption}
+                    targetKeys={targetKeys}
+                    onChange={handleChange}
+                    onSearch={handleSearch}
+                    render={(item) => `${item.title} - ${item.description}`}
+                    style={{ width:'100%' }}
+                />
+            </Form.Item>
+        </Form>
+    )
+}
+
+const FormRole = ({ initialValues, onSubmit, mode, close }) => {
 	const [form] = Form.useForm();
 
 	const handleSubmit = () => {
@@ -20,11 +64,11 @@ const FormUser = ({ initialValues, onSubmit, mode, close }) => {
 		<Form form={form} initialValues={initialValues} onFinish={handleSubmit}>
 			{mode=='edit' && <Form.Item noStyle name="id"><Input type="hidden" /></Form.Item>}
 			<Form.Item
-				name="username"
-				label="Username"
-				rules={[{ required: true, message: "Please enter a username" }]}
+				name="name"
+				label="Role Name"
+				rules={[{ required: true, message: "Please enter a role name" }]}
 			>
-				<Input type="text" disabled={mode=='edit'} />
+				<Input type="text" />
 			</Form.Item>
 
 			<Form.Item
@@ -47,18 +91,23 @@ const FormUser = ({ initialValues, onSubmit, mode, close }) => {
 	);
 };
 
-const User = () => {
+const Role = () => {
 	const setDrawer = useSetRecoilState(initDrawerState);
 	const closeDrawer = useResetRecoilState(closeDrawerState);
 
 	const [dataSource, setDataSource] = useState([]);
 	const [columns, setColumns] = useState([]);
 
+    const getPermissions = async () => {
+        let pers = await apiClient().get('/permission');
+        return pers.data;
+    }
+
     const updateHandler = async (values) => {
 		values.updated_at = dayjs().toISOString();
 		let find = values?.id;
-		values = _.omit(values,['id','username']); // username cannot change
-		let result = await apiClient().put('/user', values, {params: {id: find}});
+		values = _.omit(values,['id']); // username cannot change
+		let result = await apiClient().put('/role', values, {params: {id: find}});
 		if (result?.data?.changedRows==1) {
 			message.success('Update Success');
 			await fetchData()
@@ -69,10 +118,10 @@ const User = () => {
     }
 
     const createHandler = async (values) => {
-		let check = await apiClient().get('/user', {params:{['u.username']:values?.username, ['u.del']: 0}});
+		let check = await apiClient().get('/role', {params:{['r.name']:values?.name, ['r.del']: 0}});
 		if (_.size(check?.data)==0) {
 			values.created_at = dayjs().toISOString();
-			let result = await apiClient().post('/user', values);
+			let result = await apiClient().post('/role', values);
 			if (result?.data?.insertId) {
 				message.success('Create Success');
 				await fetchData()
@@ -87,7 +136,7 @@ const User = () => {
 
     const deleteHandler = async (values) => {
 		values.updated_at = dayjs().toISOString();
-		let result = await apiClient().delete("/user", {params:{id:values?.id}});
+		let result = await apiClient().delete("/role", {params:{id:values?.id}});
 		if (result?.data?.affectedRows>0) {
 			message.success('Delete Success');
 			await fetchData()
@@ -98,8 +147,8 @@ const User = () => {
     }
 
 	const fetchData = async () => {
-		let result = await apiClient().get("/user");
-		let ignoreShow = ['roles_id', 'id']; // hidden column
+		let result = await apiClient().get("/role");
+        let ignoreShow = ['permission_id','created_at','updated_at','del','id']; // hidden column
 		let data = _.map(_.filter(_.keys(_.result(result?.data, "[0]")), f => !_.includes(ignoreShow, f)), (val, key) => ({
 			title: _.upperFirst(val),
 			dataIndex: val,
@@ -129,9 +178,27 @@ const User = () => {
 									setDrawer({
 										title: "Edit",
 										content: (
-											<FormUser
+											<FormRole
                                                 onSubmit={updateHandler}
                                                 initialValues={record}
+												mode="edit"
+												close={() => closeDrawer()}
+											/>
+										),
+									});
+								},
+							},
+							{
+								key: "mappermission",
+								label: "Permission",
+								icon: <EditOutlined />,
+								onClick: () => {
+									setDrawer({
+										title: "Map Permission",
+										content: (
+											<MapPermission
+                                                onSubmit={updateHandler}
+                                                getPermissions={getPermissions}
 												mode="edit"
 												close={() => closeDrawer()}
 											/>
@@ -182,7 +249,7 @@ const User = () => {
                     setDrawer({
                         title: "Create",
                         content: (
-                            <FormUser
+                            <FormRole
                                 onSubmit={createHandler}
                                 initialValues={{status:'active'}}
                                 mode="create"
@@ -199,4 +266,4 @@ const User = () => {
 	);
 };
 
-export default User;
+export default Role;

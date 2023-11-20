@@ -25,7 +25,7 @@ export const authOptions = {
 				},
 			},
 			async authorize(credentials, req) {
-				let old = await apiClient().post('/user',{username:credentials.username});
+				let old = await apiClient().post('/user/find',{username:credentials.username});
 				let salt = old?.data[0]?.salt;
 				let result = await apiClient().post('/user/login', {username:credentials.username, password: hashPassword(credentials.password, salt)}).catch(e => console.log(e))
 				if (result?.status==200 && _.size(result?.data)>0) {

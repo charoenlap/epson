@@ -7,28 +7,27 @@ export default async function handler(req, res) {
   try {
     const {method,data,params} = decode(req.body)
     if (method=='get') {
-      let where = 'WHERE u.del=0 ';
+      let where = 'WHERE r.del = 0 ';
       if (_.size(params)>0) {
-        where = 'WHERE u.del=0 AND ';
+        where = 'WHERE r.del = 0 AND ';
         where += _.join(_.map(params, (v,k) => `${k}=?`), ' AND ')+' ';
       }
-      let sql = 'SELECT u.id as id,u.username,u.status,GROUP_CONCAT(r.id) as roles_id,GROUP_CONCAT(r.name) as roles_name FROM ep_users u ';
-      sql += 'LEFT JOIN ep_user_of_role ur on u.id = ur.user_id ';
-      sql += 'LEFT JOIN ep_roles r on ur.role_id = r.id ';
+      let sql = 'SELECT r.*, GROUP_CONCAT(p.id) as permission_id, GROUP_CONCAT(p.permission) as permission_name FROM ep_roles r ';
+      sql += 'LEFT JOIN ep_role_of_permission rp on r.id = rp.role_id ';
+      sql += 'LEFT JOIN ep_permissions p on rp.role_id = p.id ';
       sql += where
-      sql += 'GROUP BY u.id ';
+      sql += 'GROUP BY r.id ';
       console.log(sql, _.values(params))
       const [result] = await connection.query(sql, (_.size(params)>0?_.values(params):null), (err,results) => {
         console.error(err);
         console.log(results);
       })
 
-
       res.status(200).json({data:encode(result)});
     } else if (method=='post') {
       let col = _.join(_.keys(data), ',');
       console.log(_.values(data));
-      let sql = `INSERT INTO ep_users (${col}) VALUES (${_.map(_.values(data), v => '?')})`;
+      let sql = `INSERT INTO ep_roles (${col}) VALUES (${_.map(_.values(data), v => '?')})`;
       console.log(sql);
       const [result] = await connection.query(
         sql,
@@ -44,7 +43,7 @@ export default async function handler(req, res) {
       console.log(params,data)
       let where = _.join(_.map(params, (v,k) => `${k}=${v}`), ' AND ');
       let setVal = _.join(_.map(data, (v,k) => `${k}='${v}'`), ', ');
-      let sql = `UPDATE ep_users SET ${setVal} WHERE ${where}`;
+      let sql = `UPDATE ep_roles SET ${setVal} WHERE ${where}`;
       console.log(sql);
       const [result] = await connection.query(
         sql,
@@ -58,7 +57,7 @@ export default async function handler(req, res) {
       res.status(200).json({data: encode(result)})
     } else if (method=='delete') {
       let where = _.join(_.map(params, (v,k) => `${k}='${v}'`), ' AND ')
-      let sql = `UPDATE ep_users SET del=1, updated=${data?.updated_at} WHERE ${where}`;
+      let sql = `UPDATE ep_roles SET del=1, updated=${data?.updated_at} WHERE ${where}`;
       console.log(sql);
       const [result] = await connection.query(
         sql,

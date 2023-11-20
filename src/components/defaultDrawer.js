@@ -19,7 +19,7 @@ const DefaultDrawer = () => {
 			placement="right"
 			onClose={onClose}
 			open={open}
-            width={'40%'}
+            width={'50%'}
 		>
             {content}
         </Drawer>

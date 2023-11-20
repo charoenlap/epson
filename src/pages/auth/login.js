@@ -15,7 +15,7 @@ export default function Login() {
     const [form] = Form.useForm();
 
     const checkPassword3Month = async (username) => {
-      let result = await apiClient().post('/user', {username: username})
+      let result = await apiClient().post('/user/find', {username: username})
       let condition = dayjs(_.result(result, 'data[0].date_changepassword')).isBefore(dayjs().subtract(3,'months').format('YYYY-MM-DD'), 'day'); // > 3 month true
       console.log('condition',condition);
       return {

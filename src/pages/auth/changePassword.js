@@ -19,7 +19,7 @@ const ChangePassword = () => {
         if (values?.username && values?.newpassword == values?.confirmpassword) {
             console.log(values)
             // check duplicate old password
-            let old = await apiClient().post('/user', {username: values.username})
+            let old = await apiClient().post('/user/find', {username: values.username})
             console.log('old',old)
             if (old?.data[0]?.password == hashPassword(values.newpassword, old?.data[0]?.salt)) {
                 message.error('The new password you entered is the same as old password. Please enter a different password.');
