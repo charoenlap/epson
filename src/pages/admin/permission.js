@@ -126,7 +126,7 @@ const Permission = () => {
 				<Dropdown
 					placement="bottomRight"
 					arrow
-					disabled={record?.username=='admin'}
+					disabled={record?.permission=='*'}
 					menu={{
 						items: [
 							{

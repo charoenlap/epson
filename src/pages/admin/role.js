@@ -7,48 +7,71 @@ import { useSetRecoilState, useResetRecoilState } from "recoil";
 import { initDrawerState, closeDrawerState } from "@/store/drawer";
 import dayjs from 'dayjs'
 
-const MapPermission = ({getPermissions, onSubmit, mode, close}) => {
-    const [mockData, setMockData] = useState([]);
-    const [targetKeys, setTargetKeys] = useState([]);
-    const getMock = async () => {
-        let result = await getPermissions();
-        console.log(result); 
-      setMockData(_.map(result, (v,k) => ({
-        key: v?.id,
-        title: v?.name,
-        description: v?.permission
-      })));
-    };
-    useEffect(() => {
-      getMock();
-    }, []);
-    useEffect(() => {
-      console.log(targetKeys,mockData);
-    }, [targetKeys,mockData])
-    
-    const filterOption = (inputValue, option) => option.description.indexOf(inputValue) > -1;
-    const handleChange = (newTargetKeys) => {
-      setTargetKeys(newTargetKeys);
-    };
-    const handleSearch = (dir, value) => {
-      console.log('search:', dir, value);
-    };
-    return (
-        <Form>
-            <Form.Item>
-                <Transfer
-                    dataSource={mockData}
-                    showSearch
-                    filterOption={filterOption}
-                    targetKeys={targetKeys}
-                    onChange={handleChange}
-                    onSearch={handleSearch}
-                    render={(item) => `${item.title} - ${item.description}`}
-                    style={{ width:'100%' }}
-                />
-            </Form.Item>
-        </Form>
-    )
+
+const FormTransfer = ({ initialValues, onSubmit, close }) => {
+	const [form] = Form.useForm();
+	const [mockData, setMockData] = useState([]);
+	const [targetKeys, setTargetKeys] = useState([]);
+	
+	const getLists = async () => {
+		console.log(initialValues);
+		let result = await apiClient().get('/permission', {params:{'status':'active'}});
+		setMockData(_.map(result?.data, val => ({
+			key: val?.id,
+			title: `${val?.permission}`,
+		})));
+		if (initialValues?.permission_id && !_.isEmpty(initialValues?.permission_id)) {
+			let valRoles = _.map(_.split(initialValues?.permission_id, ','), v => +v);
+			console.log('initialValues?.permission_id', valRoles);
+			setTargetKeys(valRoles);
+			form.setFieldValue('permission_id', JSON.stringify(valRoles));
+		}
+	}
+	
+	const filterOption = (inputValue, option) => _.indexOf(_.lowerCase(option.name), _.lowerCase(inputValue)) > -1 || _.startsWith(_.lowerCase(option.name), _.lowerCase(inputValue));
+	const handleChange = (newTargetKeys) => {
+	  setTargetKeys(newTargetKeys);
+	  console.log(newTargetKeys);
+	  form.setFieldValue('permission_id', JSON.stringify(newTargetKeys));
+	};
+	const handleSearch = (dir, value) => {
+	  console.log('search:', dir, value);
+	};
+	
+	useEffect(() => {
+		getLists();
+	}, [initialValues])
+	
+
+	return (
+		<Form form={form} initialValues={{role_id: initialValues?.id}} onFinish={onSubmit}>
+			<Row>
+				<Col span={24}>
+					<Transfer 
+						dataSource={mockData}
+						targetKeys={targetKeys}
+						render={(item) => item.title}
+						filterOption={filterOption}
+						onChange={handleChange}
+						onSearch={handleSearch}
+						showSearch
+						disabled={initialValues?.username=='admin'}
+					/>
+				</Col>
+				<Col span={24}>
+					<Form.Item name="role_id">
+						<Input />
+					</Form.Item>
+					<Form.Item name="permission_id">
+						<Input />
+					</Form.Item>
+					<Form.Item>
+						<Button type="primary" htmlType="submit" disabled={initialValues?.username=='admin'}>Save</Button>
+					</Form.Item>
+				</Col>
+			</Row>
+		</Form>
+	)
 }
 
 const FormRole = ({ initialValues, onSubmit, mode, close }) => {
@@ -98,10 +121,15 @@ const Role = () => {
 	const [dataSource, setDataSource] = useState([]);
 	const [columns, setColumns] = useState([]);
 
-    const getPermissions = async () => {
-        let pers = await apiClient().get('/permission');
-        return pers.data;
-    }
+	const updatePermission = async (values) => {
+		if (typeof values?.permission_id == 'string') {
+			values.permission_id = JSON.parse(values.permission_id);
+		}
+		console.log('updatepermission', values);
+		await apiClient().post('/role/permission', values)
+		closeDrawer();
+		await fetchData();
+	}
 
     const updateHandler = async (values) => {
 		values.updated_at = dayjs().toISOString();
@@ -167,7 +195,7 @@ const Role = () => {
 				<Dropdown
 					placement="bottomRight"
 					arrow
-					disabled={record?.username=='admin'}
+					disabled={record?.name=='root'}
 					menu={{
 						items: [
 							{
@@ -190,16 +218,15 @@ const Role = () => {
 							},
 							{
 								key: "mappermission",
-								label: "Permission",
+								label: "Map Permission",
 								icon: <EditOutlined />,
 								onClick: () => {
 									setDrawer({
 										title: "Map Permission",
 										content: (
-											<MapPermission
-                                                onSubmit={updateHandler}
-                                                getPermissions={getPermissions}
-												mode="edit"
+											<FormTransfer
+                                                onSubmit={updatePermission}
+                                                initialValues={record}
 												close={() => closeDrawer()}
 											/>
 										),

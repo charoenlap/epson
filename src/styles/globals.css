@@ -30,3 +30,8 @@ ul#menuside li ul {
 .ant-upload-list-item-container {
   display: none;
 }
+
+.ant-transfer-list {
+  width: 50% !important;
+  height: 50vh !important;
+}

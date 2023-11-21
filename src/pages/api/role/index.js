@@ -14,7 +14,7 @@ export default async function handler(req, res) {
       }
       let sql = 'SELECT r.*, GROUP_CONCAT(p.id) as permission_id, GROUP_CONCAT(p.permission) as permission_name FROM ep_roles r ';
       sql += 'LEFT JOIN ep_role_of_permission rp on r.id = rp.role_id ';
-      sql += 'LEFT JOIN ep_permissions p on rp.role_id = p.id ';
+      sql += 'LEFT JOIN ep_permissions p on rp.permission_id = p.id ';
       sql += where
       sql += 'GROUP BY r.id ';
       console.log(sql, _.values(params))

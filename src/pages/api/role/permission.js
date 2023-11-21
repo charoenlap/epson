@@ -8,14 +8,14 @@ export default async function handler(req, res) {
     const {method,data,params} = decode(req.body)
     if (method=='post') {
       console.log(params,data)
-      if (data?.role_id && _.isArray(data.role_id)) {
-        data.role_id = _.orderBy(data.role_id)
-        let sql = 'DELETE FROM ep_user_of_role WHERE user_id = ?;';
-        let [deleted] = await connection.query(sql, [data.user_id])
+      if (data?.permission_id && _.isArray(data.permission_id)) {
+        data.permission_id = _.orderBy(data.permission_id)
+        let sql = 'DELETE FROM ep_role_of_permission WHERE role_id = ?;';
+        let [deleted] = await connection.query(sql, [data.role_id])
         console.log('deleted',deleted);
-        let tempSql = _.join(_.map(data.role_id, role => '(?, ?)'), ', ');
-        let sql2 = `INSERT INTO ep_user_of_role (user_id, role_id) VALUES ${tempSql};`;
-        let roleArr = _.flatten(_.map(data.role_id, arr => ([data.user_id, arr])));
+        let tempSql = _.join(_.map(data.permission_id, role => '(?, ?)'), ', ');
+        let sql2 = `INSERT INTO ep_role_of_permission (role_id, permission_id) VALUES ${tempSql};`;
+        let roleArr = _.flatten(_.map(data.permission_id, arr => ([data.role_id, arr])));
         let [inserted] = await connection.query(sql2, roleArr);
         console.log('inserted',sql2,roleArr, inserted);
         res.status(200).json({data: encode(inserted)});

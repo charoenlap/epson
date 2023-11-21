@@ -1,11 +1,76 @@
 import { apiClient } from "@/utils/apiClient";
-import { Table, Row, Col, Button, Dropdown, Input, Form, Select, Modal, message, Badge, Tag } from "antd";
+import { Table, Row, Col, Button, Dropdown, Input, Form, Select, Modal, message, Badge, Tag, Transfer } from "antd";
 import React, { useEffect, useState } from "react";
 import { EditOutlined, DeleteOutlined, AppstoreAddOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import _ from "lodash";
 import { useSetRecoilState, useResetRecoilState } from "recoil";
 import { initDrawerState, closeDrawerState } from "@/store/drawer";
 import dayjs from 'dayjs'
+
+const FormTransfer = ({ initialValues, onSubmit, close }) => {
+	const [form] = Form.useForm();
+	const [mockData, setMockData] = useState([]);
+	const [targetKeys, setTargetKeys] = useState([]);
+	
+	const getLists = async () => {
+		let result = await apiClient().get('/role', {params:{'r.status':'active'}});
+		setMockData(_.map(result?.data, val => ({
+			key: val?.id,
+			title: `${val?.name}`,
+		})));
+		if (initialValues?.roles_id && !_.isEmpty(initialValues?.roles_id)) {
+			let valRoles = _.map(_.split(initialValues?.roles_id, ','), v => +v);
+			console.log('initialValues?.roles_id', valRoles);
+			setTargetKeys(valRoles);
+			form.setFieldValue('role_id', JSON.stringify(valRoles));
+		}
+	}
+	
+	const filterOption = (inputValue, option) => _.indexOf(_.lowerCase(option.title), _.lowerCase(inputValue)) > -1 || _.startsWith(_.lowerCase(option.title), _.lowerCase(inputValue));
+	const handleChange = (newTargetKeys) => {
+	  setTargetKeys(newTargetKeys);
+	  console.log(newTargetKeys);
+	  form.setFieldValue('role_id', JSON.stringify(newTargetKeys));
+	};
+	const handleSearch = (dir, value) => {
+	  console.log('search:', dir, value);
+	};
+	
+	useEffect(() => {
+		getLists();
+	}, [initialValues])
+	
+
+	return (
+		<Form form={form} initialValues={{user_id: initialValues?.id}} onFinish={onSubmit}>
+			<Row>
+				<Col span={24}>
+					<Transfer 
+						dataSource={mockData}
+						targetKeys={targetKeys}
+						render={(item) => item.title}
+						filterOption={filterOption}
+						onChange={handleChange}
+						onSearch={handleSearch}
+						showSearch
+						disabled={initialValues?.username=='admin'}
+					/>
+				</Col>
+				<Col span={24}>
+					<Form.Item name="user_id">
+						<Input />
+					</Form.Item>
+					<Form.Item name="role_id">
+						<Input />
+					</Form.Item>
+					<Form.Item>
+						<Button type="primary" htmlType="submit" disabled={initialValues?.username=='admin'}>Save</Button>
+					</Form.Item>
+				</Col>
+			</Row>
+		</Form>
+	)
+}
 
 const FormUser = ({ initialValues, onSubmit, mode, close }) => {
 	const [form] = Form.useForm();
@@ -53,6 +118,16 @@ const User = () => {
 
 	const [dataSource, setDataSource] = useState([]);
 	const [columns, setColumns] = useState([]);
+
+	const updateRoles = async (values) => {
+		if (typeof values?.role_id == 'string') {
+			values.role_id = JSON.parse(values.role_id);
+		}
+		console.log('updaterols', values);
+		await apiClient().post('/user/role', values)
+		closeDrawer();
+		await fetchData();
+	}
 
     const updateHandler = async (values) => {
 		values.updated_at = dayjs().toISOString();
@@ -118,13 +193,14 @@ const User = () => {
 				<Dropdown
 					placement="bottomRight"
 					arrow
-					disabled={record?.username=='admin'}
+					
 					menu={{
 						items: [
 							{
 								key: "edit",
 								label: "Edit",
 								icon: <EditOutlined />,
+								disabled: record?.username=='admin',
 								onClick: () => {
 									setDrawer({
 										title: "Edit",
@@ -140,9 +216,27 @@ const User = () => {
 								},
 							},
 							{
+								key: "role",
+								label: "Map Role",
+								icon: <DeleteOutlined />,
+                                onClick: () => {
+									setDrawer({
+										title: "Map Role",
+										content: (
+											<FormTransfer
+                                                onSubmit={updateRoles}
+                                                initialValues={record}
+												close={() => closeDrawer()}
+											/>
+										),
+									});
+                                }
+							},
+							{
 								key: "delete",
 								label: "Delete",
 								icon: <DeleteOutlined />,
+								disabled: record?.username=='admin',
 								danger: true,
                                 onClick: () => {
                                     Modal.confirm({
