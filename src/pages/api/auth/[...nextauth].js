@@ -30,8 +30,12 @@ export const authOptions = {
 				let result = await apiClient().post('/user/login', {username:credentials.username, password: hashPassword(credentials.password, salt)}).catch(e => console.log(e))
 				if (result?.status==200 && _.size(result?.data)>0) {
 					await apiClient().put('/user/attempt', {username: credentials.username, attempt: 0})
+					console.log(credentials.username);
+					let userInfo = await apiClient().get('/user', {params:{username: credentials.username}})
+					console.log(userInfo.data[0]);
 					return {
-						username: result.data[0].username
+						username: _.result(userInfo, 'data[0].username'),
+						permissions: _.result(userInfo, 'data[0].permissions')
 					};
 				} else {
 					await apiClient().put('/user/attempt', {username: credentials.username, attempt: +old?.data[0].fail_attempt+1})
@@ -64,14 +68,16 @@ export const authOptions = {
 			if (account?.provider == "credentials" && user.username) {
 				token.username = user.username;
 				token.user = user.username;
+				token.permissions = user?.permissions;
 			}
-			// console.log('jwt', token);
+			// console.log('jwt', token, user, account, profile);
 			return token;
 		},
 		async session({ session, user, token }) {
 			if (token?.username) {
 				session.user.username = token.username;
 				session.user.user = token.username;
+				session.user.permissions = token.permissions;
 			}
 			// console.log('session', session, token)
 			return session;

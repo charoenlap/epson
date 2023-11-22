@@ -4,9 +4,12 @@ import { Layout, Menu, theme } from "antd";
 import { useRouter } from "next/router";
 import { breadcrumbState, titleState } from "@/store/page";
 import _ from 'lodash';
+import { useSession } from "next-auth/react";
+import { mapUrl } from "@/utils/tools";
 const { Header, Content, Footer, Sider } = Layout;
 
 const Sidebar = () => {
+    const { data: session, status } = useSession();
     // const { components: { Menu: {darkItemBg}} } = theme.useToken();
     const [bc,setBc] = useRecoilState(breadcrumbState);
     const [title,setTitle] = useRecoilState(titleState)
@@ -56,7 +59,7 @@ const Sidebar = () => {
             }
             if (item.children) {
                 _.map(item.children, child => {
-                    console.log(pathname,child.href);
+                    // console.log(pathname,child.href);
                     if (child.href == pathname) {
                         selected = [item.key, child.key];
                     }
@@ -153,13 +156,13 @@ const Sidebar = () => {
         }
         
     }, [router.pathname])
-    
+
     useEffect(() => {
         findCurrent(router.pathname);
     }, [items,router.pathname]);
-    useEffect(() => {
-        console.log('currentMenuItem',currentMenuItem)
-    }, [currentMenuItem]);
+    // useEffect(() => {
+    //     console.log('currentMenuItem',currentMenuItem)
+    // }, [currentMenuItem]);
     
     
 
@@ -176,7 +179,22 @@ const Sidebar = () => {
                 defaultSelectedKeys={['home']}
                 defaultOpenKeys={['datacenter','dataanalytics']}
                 selectedKeys={currentMenuItem}
-                items={items}
+                items={_.filter(items, item => {
+                    if (item.children) {
+                        return _.some(item.children, child => {
+                            let showchild = mapUrl(child.href, _.split(session?.user?.permissions,','))
+                            console.log('child', showchild, child.href, _.split(session?.user?.permissions,','));
+                            return showchild;
+                        })
+                    }
+                    if (item?.href) {
+                        let showit = mapUrl(item.href, _.split(session?.user?.permissions,','))
+                        // console.log(item.href);
+                        return showit || item.key=='logout';
+                    }
+                    console.log(item);
+                    return item.key=='logout'
+                })}
                 onClick={handleClick}
                 style={{background: 'rgb(68,114,196)'}}
             />

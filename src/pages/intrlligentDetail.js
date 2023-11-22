@@ -14,6 +14,7 @@ import { LaptopOutlined, NotificationOutlined } from '@ant-design/icons';
 import { Table, Tag } from 'antd';
 import { Select } from 'antd';
 import { useRouter } from 'next/router';
+import { withAuth } from '@/utils/middleware';
 const { Content,Sider  } = Layout;
 function getItem(label, key, icon, children) {
   return {
@@ -176,7 +177,7 @@ const propsCalculate = {
   action: '/api/analytic/readfile',
   method: 'post',
 };
-export default function Index() {
+const IntelligentDetail = () => {
   const [selectedItem, setSelectedItem] = useState();
   const [itemsModel, setItems] = useState([]);
   const [selectedModel, setSelectedModel] = useState("");
@@ -342,3 +343,5 @@ export default function Index() {
     </>
   );
 }
+
+export default withAuth(IntelligentDetail)

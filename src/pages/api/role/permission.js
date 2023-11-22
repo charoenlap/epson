@@ -27,7 +27,7 @@ export default async function handler(req, res) {
     }
   } catch (error) {
     console.error('Error:', error);
-    // return res.status(500).json({ error: 'Server error' });
+    return res.status(500).json({ error: 'Server error' });
   }finally {
     connection.end();; // Release the connection back to the pool
   }

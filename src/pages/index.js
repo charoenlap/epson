@@ -8,7 +8,7 @@ import {
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { withAuth } from "../utils/middleware";
+import { withAuth } from "@/utils/middleware";
 const { Meta } = Card;
 const Index = () => {
 	const { data: session, status } = useSession();

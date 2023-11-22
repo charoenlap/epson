@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useRecoilValue } from "recoil";
+import { withAuth } from "@/utils/middleware";
 import {
 	Select,
 	Form,
@@ -263,4 +264,4 @@ const Specification = () => {
 	);
 };
 
-export default Specification;
+export default withAuth(Specification);

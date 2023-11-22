@@ -14,6 +14,8 @@ import { Layout,theme,  } from 'antd';
 import { LaptopOutlined, NotificationOutlined } from '@ant-design/icons';
 import { DownloadOutlined } from '@ant-design/icons';
 import { Select } from 'antd';
+import { withAuth } from '@/utils/middleware';
+import _ from 'lodash';
 const { Search } = Input;
 const { Content,Sider  } = Layout;
 function getItem(label, key, icon, children) {
@@ -25,7 +27,7 @@ function getItem(label, key, icon, children) {
   };
 }
 const data = [];
-export default function Index() {
+const Nvram = () => {
   const [itemsModel, setItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   useEffect(() => {
@@ -33,7 +35,7 @@ export default function Index() {
       .then(response => response.json())
       .then(data => {
         console.log(data);
-        const transformedItems = data.map(item => ({
+        const transformedItems = _.map(data, item => ({
           key: item.model_name,
           label: item.model_name,
           manual: item.manual,
@@ -85,3 +87,5 @@ export default function Index() {
     </>
   );
 }
+
+export default withAuth(Nvram)

@@ -9,8 +9,10 @@ import { Dropdown } from 'antd';
 import { Breadcrumb } from 'antd';
 import { apiClient } from '../utils/apiClient';
 import _ from 'lodash';
+import { withAuth } from '@/utils/middleware';
 const { Meta } = Card;
-export default function Manual() {
+
+const Manual = () => {
     const [lists, setLists] = useState([]);
 
     const getLists = async () => {
@@ -89,3 +91,5 @@ export default function Manual() {
     </>
   )
 }
+
+export default withAuth(Manual)

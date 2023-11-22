@@ -12,17 +12,18 @@ export default async function handler(req, res) {
         where = 'WHERE u.del=0 AND ';
         where += _.join(_.map(params, (v,k) => `${k}=?`), ' AND ')+' ';
       }
-      let sql = 'SELECT u.id as id,u.username,u.status,GROUP_CONCAT(r.id) as roles_id,GROUP_CONCAT(r.name) as roles_name FROM ep_users u ';
+      let sql = 'SELECT u.id as id,u.username,u.status,GROUP_CONCAT(DISTINCT r.id) as roles_id,GROUP_CONCAT(DISTINCT r.name) as roles_name,GROUP_CONCAT(DISTINCT ep.permission) as permissions FROM ep_users u ';
       sql += 'LEFT JOIN ep_user_of_role ur on u.id = ur.user_id ';
       sql += 'LEFT JOIN ep_roles r on ur.role_id = r.id ';
+      sql += 'LEFT JOIN ep_role_of_permission erop on ur.role_id = erop.role_id ';
+      sql += 'LEFT JOIN ep_permissions ep on erop.permission_id = ep.id ';
       sql += where
       sql += 'GROUP BY u.id ';
       console.log(sql, _.values(params))
-      const [result] = await connection.query(sql, (_.size(params)>0?_.values(params):null), (err,results) => {
+      let [result] = await connection.query(sql, (_.size(params)>0?_.values(params):null), (err,results) => {
         console.error(err);
         console.log(results);
       })
-
 
       res.status(200).json({data:encode(result)});
     } else if (method=='post') {
@@ -58,7 +59,7 @@ export default async function handler(req, res) {
       res.status(200).json({data: encode(result)})
     } else if (method=='delete') {
       let where = _.join(_.map(params, (v,k) => `${k}='${v}'`), ' AND ')
-      let sql = `UPDATE ep_users SET del=1, updated=${data?.updated_at} WHERE ${where}`;
+      let sql = `UPDATE ep_users SET del=1, updated_at='${data?.updated_at}' WHERE ${where}`;
       console.log(sql);
       const [result] = await connection.query(
         sql,
@@ -75,7 +76,7 @@ export default async function handler(req, res) {
     }
   } catch (error) {
     console.error('Error:', error);
-    // return res.status(500).json({ error: 'Server error' });
+    return res.status(500).json({ error: 'Server error' });
   }finally {
     connection.end();; // Release the connection back to the pool
   }

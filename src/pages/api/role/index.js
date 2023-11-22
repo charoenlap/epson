@@ -12,7 +12,7 @@ export default async function handler(req, res) {
         where = 'WHERE r.del = 0 AND ';
         where += _.join(_.map(params, (v,k) => `${k}=?`), ' AND ')+' ';
       }
-      let sql = 'SELECT r.*, GROUP_CONCAT(p.id) as permission_id, GROUP_CONCAT(p.permission) as permission_name FROM ep_roles r ';
+      let sql = 'SELECT r.*, GROUP_CONCAT(DISTINCT p.id) as permission_id, GROUP_CONCAT(DISTINCT p.permission) as permission_name FROM ep_roles r ';
       sql += 'LEFT JOIN ep_role_of_permission rp on r.id = rp.role_id ';
       sql += 'LEFT JOIN ep_permissions p on rp.permission_id = p.id ';
       sql += where
@@ -57,7 +57,7 @@ export default async function handler(req, res) {
       res.status(200).json({data: encode(result)})
     } else if (method=='delete') {
       let where = _.join(_.map(params, (v,k) => `${k}='${v}'`), ' AND ')
-      let sql = `UPDATE ep_roles SET del=1, updated=${data?.updated_at} WHERE ${where}`;
+      let sql = `UPDATE ep_roles SET del=1, updated_at='${data?.updated_at}' WHERE ${where}`;
       console.log(sql);
       const [result] = await connection.query(
         sql,

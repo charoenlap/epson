@@ -7,7 +7,7 @@ export default async function handler(req, res) {
   try {
     const {method,data,params} = decode(req.body)
     if (method=='post') {
-      const [user] = await connection.query(
+      let [user] = await connection.query(
         'SELECT * FROM ep_users WHERE username = ?',
         [data?.username],
         function(err, results) {
@@ -16,8 +16,6 @@ export default async function handler(req, res) {
         }
       );
       connection.end();
-
-      // console.log(user)
 
       if (user.length === 0) {
         res.status(200).json({data: encode([])})

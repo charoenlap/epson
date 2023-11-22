@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 import MyModel from "@/components/myModel";
 import { selectModelState } from '@/store/data';
 import Link from 'next/link';
+import { withAuth } from '@/utils/middleware';
 const { Content,Sider  } = Layout;
 const { Meta } = Card;
 function getItem(label, key, icon, children) {
@@ -253,4 +254,4 @@ const Comparison = () => {
   )
 }
 
-export default Comparison
+export default withAuth(Comparison)

@@ -6,6 +6,8 @@ import _ from "lodash";
 import { useSetRecoilState, useResetRecoilState } from "recoil";
 import { initDrawerState, closeDrawerState } from "@/store/drawer";
 import dayjs from 'dayjs'
+import { getSession } from "next-auth/react";
+import { mapUrl } from "@/utils/tools";
 
 
 const FormTransfer = ({ initialValues, onSubmit, close }) => {
@@ -18,7 +20,7 @@ const FormTransfer = ({ initialValues, onSubmit, close }) => {
 		let result = await apiClient().get('/permission', {params:{'status':'active'}});
 		setMockData(_.map(result?.data, val => ({
 			key: val?.id,
-			title: `${val?.permission}`,
+			title: `${val?.name} - ${val?.permission}`,
 		})));
 		if (initialValues?.permission_id && !_.isEmpty(initialValues?.permission_id)) {
 			let valRoles = _.map(_.split(initialValues?.permission_id, ','), v => +v);
@@ -28,7 +30,7 @@ const FormTransfer = ({ initialValues, onSubmit, close }) => {
 		}
 	}
 	
-	const filterOption = (inputValue, option) => _.indexOf(_.lowerCase(option.name), _.lowerCase(inputValue)) > -1 || _.startsWith(_.lowerCase(option.name), _.lowerCase(inputValue));
+	const filterOption = (inputValue, option) => _.indexOf(_.lowerCase(option.title), _.lowerCase(inputValue)) > -1 || _.startsWith(_.lowerCase(option.title), _.lowerCase(inputValue));
 	const handleChange = (newTargetKeys) => {
 	  setTargetKeys(newTargetKeys);
 	  console.log(newTargetKeys);
@@ -59,11 +61,11 @@ const FormTransfer = ({ initialValues, onSubmit, close }) => {
 					/>
 				</Col>
 				<Col span={24}>
-					<Form.Item name="role_id">
-						<Input />
+					<Form.Item name="role_id" noStyle>
+						<Input type="hidden" />
 					</Form.Item>
-					<Form.Item name="permission_id">
-						<Input />
+					<Form.Item name="permission_id" noStyle>
+						<Input type="hidden" />
 					</Form.Item>
 					<Form.Item>
 						<Button type="primary" htmlType="submit" disabled={initialValues?.username=='admin'}>Save</Button>
@@ -126,6 +128,7 @@ const Role = () => {
 			values.permission_id = JSON.parse(values.permission_id);
 		}
 		console.log('updatepermission', values);
+		values.permission_id = _.uniq(values.permission_id)
 		await apiClient().post('/role/permission', values)
 		closeDrawer();
 		await fetchData();
@@ -164,7 +167,7 @@ const Role = () => {
 
     const deleteHandler = async (values) => {
 		values.updated_at = dayjs().toISOString();
-		let result = await apiClient().delete("/role", {params:{id:values?.id}});
+		let result = await apiClient().delete("/role", {params:{id:values?.id}, data: {updated_at: dayjs().toISOString()}});
 		if (result?.data?.affectedRows>0) {
 			message.success('Delete Success');
 			await fetchData()
@@ -181,6 +184,8 @@ const Role = () => {
 			title: _.upperFirst(val),
 			dataIndex: val,
 			key: val,
+			textWrap: 'word-break',
+			ellipsis: true,
 			...(
 				val=='status'
 				? {render:(text)=><Tag color={(text=='active'?'success':'error')}>{text}</Tag>}
@@ -195,7 +200,7 @@ const Role = () => {
 				<Dropdown
 					placement="bottomRight"
 					arrow
-					disabled={record?.name=='root'}
+					disabled={_.includes(['root','Admin'], record?.name)}
 					menu={{
 						items: [
 							{
@@ -292,5 +297,24 @@ const Role = () => {
 		</Row>
 	);
 };
+
+
+export async function getServerSideProps(context) {
+	const session = await getSession(context);
+	if (!session) {
+		return {redirect: {destination: '/admin/logout', permanent: false}}
+	} else {
+		const sessionPermissions = _.split(session.user.permissions, ',');
+		const currentUrl = context.resolvedUrl;
+		console.log('url', currentUrl, sessionPermissions);
+		const isAllowed = mapUrl(currentUrl, sessionPermissions);
+		console.log(isAllowed);
+		if (isAllowed) {
+			return {props:{}}
+		} else {
+			return {redirect: {destination: '/admin/logout', permanent: false}}
+		}
+	}
+}
 
 export default Role;

@@ -6,6 +6,9 @@ import _ from "lodash";
 import { useSetRecoilState, useResetRecoilState } from "recoil";
 import { initDrawerState, closeDrawerState } from "@/store/drawer";
 import dayjs from 'dayjs'
+import { decode, hashPassword, generateSalt } from '@/utils/encryption';
+import { getSession } from "next-auth/react";
+import { mapUrl } from "@/utils/tools";
 
 const FormTransfer = ({ initialValues, onSubmit, close }) => {
 	const [form] = Form.useForm();
@@ -57,11 +60,11 @@ const FormTransfer = ({ initialValues, onSubmit, close }) => {
 					/>
 				</Col>
 				<Col span={24}>
-					<Form.Item name="user_id">
-						<Input />
+					<Form.Item name="user_id" noStyle>
+						<Input type="hidden" />
 					</Form.Item>
-					<Form.Item name="role_id">
-						<Input />
+					<Form.Item name="role_id" noStyle>
+						<Input type="hidden" />
 					</Form.Item>
 					<Form.Item>
 						<Button type="primary" htmlType="submit" disabled={initialValues?.username=='admin'}>Save</Button>
@@ -77,6 +80,15 @@ const FormUser = ({ initialValues, onSubmit, mode, close }) => {
 
 	const handleSubmit = () => {
 		form.validateFields().then((values) => {
+			
+			values.status = 'active';
+			if (mode=='create') {
+				let newSalt = generateSalt();
+				values.salt = newSalt;
+				values.created_at = dayjs().toISOString();
+			} else {
+				values.updated_at = dayjs().toISOString();
+			}
 			onSubmit(values);
 		});
 	};
@@ -100,6 +112,7 @@ const FormUser = ({ initialValues, onSubmit, mode, close }) => {
 				<Select>
 					<Select.Option value="active">Active</Select.Option>
 					<Select.Option value="inactive">Inactive</Select.Option>
+					<Select.Option value="changepassword">Init Password</Select.Option>
 				</Select>
 			</Form.Item>
 
@@ -124,6 +137,7 @@ const User = () => {
 			values.role_id = JSON.parse(values.role_id);
 		}
 		console.log('updaterols', values);
+		values.role_id = _.uniq(values.role_id)
 		await apiClient().post('/user/role', values)
 		closeDrawer();
 		await fetchData();
@@ -144,9 +158,10 @@ const User = () => {
     }
 
     const createHandler = async (values) => {
-		let check = await apiClient().get('/user', {params:{['u.username']:values?.username, ['u.del']: 0}});
+		let check = await apiClient().get('/user', {params:{['u.username']: _.trim(values?.username), ['u.del']: 0}});
 		if (_.size(check?.data)==0) {
 			values.created_at = dayjs().toISOString();
+			values.status = 'changepassword'
 			let result = await apiClient().post('/user', values);
 			if (result?.data?.insertId) {
 				message.success('Create Success');
@@ -162,7 +177,7 @@ const User = () => {
 
     const deleteHandler = async (values) => {
 		values.updated_at = dayjs().toISOString();
-		let result = await apiClient().delete("/user", {params:{id:values?.id}});
+		let result = await apiClient().delete("/user", {params:{id:values?.id}, data: {updated_at: dayjs().toISOString()}});
 		if (result?.data?.affectedRows>0) {
 			message.success('Delete Success');
 			await fetchData()
@@ -174,14 +189,16 @@ const User = () => {
 
 	const fetchData = async () => {
 		let result = await apiClient().get("/user");
-		let ignoreShow = ['roles_id', 'id']; // hidden column
+		let ignoreShow = ['roles_id', 'id', 'permissions']; // hidden column
 		let data = _.map(_.filter(_.keys(_.result(result?.data, "[0]")), f => !_.includes(ignoreShow, f)), (val, key) => ({
 			title: _.upperFirst(val),
 			dataIndex: val,
 			key: val,
+			textWrap: 'word-break',
+			ellipsis: true,
 			...(
 				val=='status'
-				? {render:(text)=><Tag color={(text=='active'?'success':'error')}>{text}</Tag>}
+				? {render:(text)=><Tag color={(text=='active'?'success':(text=='changepassword'?'warning':'error'))}>{text}</Tag>}
 				: {}
 			)
 		}));
@@ -193,14 +210,14 @@ const User = () => {
 				<Dropdown
 					placement="bottomRight"
 					arrow
-					
+					disabled={record?.username=='admin'}
 					menu={{
 						items: [
 							{
 								key: "edit",
 								label: "Edit",
 								icon: <EditOutlined />,
-								disabled: record?.username=='admin',
+								
 								onClick: () => {
 									setDrawer({
 										title: "Edit",
@@ -292,5 +309,23 @@ const User = () => {
 		</Row>
 	);
 };
+
+export async function getServerSideProps(context) {
+	const session = await getSession(context);
+	if (!session) {
+		return {redirect: {destination: '/admin/logout', permanent: false}}
+	} else {
+		const sessionPermissions = _.split(session.user.permissions, ',');
+		const currentUrl = context.resolvedUrl;
+		console.log('url', session.user.username, currentUrl, sessionPermissions);
+		const isAllowed = mapUrl(currentUrl, sessionPermissions);
+		console.log(isAllowed);
+		if (isAllowed) {
+			return {props:{}}
+		} else {
+			return {redirect: {destination: '/admin/logout', permanent: false}}
+		}
+	}
+}
 
 export default User;

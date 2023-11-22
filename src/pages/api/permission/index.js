@@ -54,7 +54,7 @@ export default async function handler(req, res) {
       res.status(200).json({data: encode(result)})
     } else if (method=='delete') {
       let where = _.join(_.map(params, (v,k) => `${k}='${v}'`), ' AND ')
-      let sql = `UPDATE ep_permissions SET del=1, updated=${data?.updated_at} WHERE ${where}`;
+      let sql = `UPDATE ep_permissions SET del=1, updated_at='${data?.updated_at}' WHERE ${where}`;
       console.log(sql);
       const [result] = await connection.query(
         sql,
@@ -71,7 +71,7 @@ export default async function handler(req, res) {
     }
   } catch (error) {
     console.error('Error:', error);
-    // return res.status(500).json({ error: 'Server error' });
+    return res.status(500).json({ error: 'Server error' });
   }finally {
     connection.end();; // Release the connection back to the pool
   }

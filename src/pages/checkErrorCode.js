@@ -15,6 +15,7 @@ import { LaptopOutlined, NotificationOutlined } from '@ant-design/icons';
 const { Search } = Input;
 const { Content,Sider  } = Layout;
 import { Select } from 'antd';
+import { withAuth } from '@/utils/middleware';
 function getItem(label, key, icon, children) {
   return {
     key,
@@ -73,7 +74,7 @@ const columns = [
 ];
 const data = [];
 
-export default function Index() {
+const CheckErrorCode = () => {
   const [itemsModel, setItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   useEffect(() => {
@@ -168,3 +169,5 @@ export default function Index() {
     </>
   );
 }
+
+export default withAuth(CheckErrorCode)

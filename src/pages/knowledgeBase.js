@@ -20,9 +20,10 @@ import MyModel from "@/components/myModel";
 import { useRecoilState } from "recoil";
 import { modelsState, selectModelState } from "@/store/data";
 import Link from "next/link";
+import { withAuth } from "@/utils/middleware";
 const { Meta } = Card;
 
-export default function Index() {
+const KnowledgeBase = () => {
 	const [form] = Form.useForm();
 	const [options, setOptions] = useState([]);
     const [optionSeries, setOptionSeries] = useState([])
@@ -127,3 +128,5 @@ export default function Index() {
 		</>
 	);
 }
+
+export default withAuth(KnowledgeBase)

@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
+import { withAuth } from "@/utils/middleware";
 import{  Col, Image, Row  } from 'antd';
 import { Card } from 'antd';
 import { useSession } from 'next-auth/react';
 const { Meta } = Card;
 import Link from 'next/link';
-export default function index() {
+const Intelligent = () => {
     
   return (
     <>
@@ -131,3 +132,5 @@ export default function index() {
     </>
   )
 }
+
+export default withAuth(Intelligent)

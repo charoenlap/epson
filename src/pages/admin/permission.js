@@ -6,6 +6,8 @@ import _ from "lodash";
 import { useSetRecoilState, useResetRecoilState } from "recoil";
 import { initDrawerState, closeDrawerState } from "@/store/drawer";
 import dayjs from 'dayjs'
+import { getSession } from "next-auth/react";
+import { mapUrl } from "@/utils/tools";
 
 const FormPermission = ({ initialValues, onSubmit, mode, close }) => {
 	const [form] = Form.useForm();
@@ -95,7 +97,7 @@ const Permission = () => {
 
     const deleteHandler = async (values) => {
 		values.updated_at = dayjs().toISOString();
-		let result = await apiClient().delete("/permission", {params:{id:values?.id}});
+		let result = await apiClient().delete("/permission", {params:{id:values?.id}, data: {updated_at: dayjs().toISOString()}});
 		if (result?.data?.affectedRows>0) {
 			message.success('Delete Success');
 			await fetchData()
@@ -126,7 +128,7 @@ const Permission = () => {
 				<Dropdown
 					placement="bottomRight"
 					arrow
-					disabled={record?.permission=='*'}
+					disabled={_.includes(['*', '/admin/*'], record?.permission)}
 					menu={{
 						items: [
 							{
@@ -206,5 +208,24 @@ const Permission = () => {
 		</Row>
 	);
 };
+
+
+export async function getServerSideProps(context) {
+	const session = await getSession(context);
+	if (!session) {
+		return {redirect: {destination: '/admin/logout', permanent: false}}
+	} else {
+		const sessionPermissions = _.split(session.user.permissions, ',');
+		const currentUrl = context.resolvedUrl;
+		console.log('url', currentUrl, sessionPermissions);
+		const isAllowed = mapUrl(currentUrl, sessionPermissions);
+		console.log(isAllowed);
+		if (isAllowed) {
+			return {props:{}}
+		} else {
+			return {redirect: {destination: '/admin/logout', permanent: false}}
+		}
+	}
+}
 
 export default Permission;
