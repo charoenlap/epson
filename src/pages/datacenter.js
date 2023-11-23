@@ -39,7 +39,7 @@ const Datacenter = () => {
 				<Row justify="center">
 				{
 					_.size(lists)>0 && _.map(lists, val => (
-						<Col span={8} >
+						<Col span={4} >
 							<Button type="link" onClick={()=>{
 								setSelectModel(val);
 								router.push('/specification')
