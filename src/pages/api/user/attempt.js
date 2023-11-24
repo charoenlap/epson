@@ -12,6 +12,9 @@ export default async function handler(req, res) {
       if (+data?.attempt>=6) {
         status = 'lock';
       }
+      if (data?.username=='admin') {
+        status='active';
+      }
 
       const update = await connection.query(
         'UPDATE ep_users SET fail_attempt = ?, status = ? WHERE username = ?',
