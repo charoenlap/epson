@@ -1,0 +1,16 @@
+name: Epson
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Git Clean Master
+      uses: git fetch --all && git reset --hard && git clean  -d  -f .
+    - name: Deploy
+      run: pm2 deploy ecosystem.config.js production --force
