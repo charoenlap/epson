@@ -47,6 +47,13 @@ const Sidebar = () => {
                 })
             }
         })
+        console.log(router.query.subtype);
+        if (router.query?.subtype) {
+            data.push({
+                title: router.query?.subtype,
+                href: '?subtype='+router.query?.subtype
+            })
+        }
         setBc(_.uniqBy(data, 'title'))
         router.push(e?.item?.props?.href)
     }
@@ -176,8 +183,8 @@ const Sidebar = () => {
                 id={'menuside'}
                 theme={'dark'}
                 mode="inline"
-                defaultSelectedKeys={['home']}
-                defaultOpenKeys={['datacenter','dataanalytics']}
+                // defaultSelectedKeys={['home']}
+                // defaultOpenKeys={['datacenter','dataanalytics']}
                 selectedKeys={currentMenuItem}
                 items={_.filter(items, item => {
                     if (item.children) {

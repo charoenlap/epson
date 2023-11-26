@@ -35,18 +35,6 @@ const Nvram = () => {
   const { subtype } = router.query;
   const [itemsModel, setItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
-  const [bc,setBc] = useRecoilState(breadcrumbState);
-  // console.log(subtype);
-  useEffect(() => {
-    setBc(
-        [
-            {title:'Home',href:'/'},
-            {title:'Data analytic',href:'/intrlligent'},
-            {title:subtype,href:'/intrlligentDetail?subtype=SC-F'},
-            {title:'NVRAM',href:'/'}
-        ]
-    )
-  }, []);
   useEffect(() => {
     fetch(`/api/manual/listModelSC?subtype=${subtype}`)
       .then(response => response.json())

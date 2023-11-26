@@ -76,17 +76,6 @@ const ServiceManual = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const router = useRouter();
   const { subtype } = router.query;
-  const [bc,setBc] = useRecoilState(breadcrumbState);
-  useEffect(() => {
-    setBc(
-        [
-            {title:'Home',href:'/'},
-            {title:'Data analytic',href:'/intrlligent'},
-            {title:subtype,href:'/intrlligentDetail?subtype=SC-F'},
-            {title:'NVRAM',href:'/'}
-        ]
-    )
-  }, []);
   useEffect(() => {
     fetch(`/api/manual/listModelSC?subtype=${subtype}`)
       .then(response => response.json())
