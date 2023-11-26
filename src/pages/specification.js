@@ -243,7 +243,7 @@ const Specification = () => {
                 <Col span={3}><h3 style={{margin:0}}>Specs / Product</h3></Col>
                 <Col span={21}>
 					<Descriptions column={1}>
-						<Descriptions.Item label="STD warranty term">
+						<Descriptions.Item>
 							{spec?.specs || "-"}
 						</Descriptions.Item>
 					</Descriptions>
