@@ -6,7 +6,7 @@ module.exports = {
     deploy : {
         production : {
             user : 'charoenlap',
-            host : ['54.179.4.127'],
+            host : ['18.142.48.217'],
             ref  : 'origin/master',
             repo : 'git@github.com:charoenlap/epson.git',
             path : '/home/charoenlap/epson',
