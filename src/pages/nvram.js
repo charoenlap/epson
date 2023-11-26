@@ -17,6 +17,8 @@ import { Select } from 'antd';
 import { withAuth } from '@/utils/middleware';
 import { useRouter } from 'next/router';
 import _ from 'lodash';
+import {useRecoilState} from 'recoil';
+import { breadcrumbState, titleState } from "@/store/page";
 const { Search } = Input;
 const { Content,Sider  } = Layout;
 function getItem(label, key, icon, children) {
@@ -33,9 +35,20 @@ const Nvram = () => {
   const { subtype } = router.query;
   const [itemsModel, setItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [bc,setBc] = useRecoilState(breadcrumbState);
   // console.log(subtype);
   useEffect(() => {
-    fetch('/api/manual/listModelSC?subtype=${subtype}')
+    setBc(
+        [
+            {title:'Home',href:'/'},
+            {title:'Data analytic',href:'/intrlligent'},
+            {title:subtype,href:'/intrlligentDetail?subtype=SC-F'},
+            {title:'NVRAM',href:'/'}
+        ]
+    )
+  }, []);
+  useEffect(() => {
+    fetch(`/api/manual/listModelSC?subtype=${subtype}`)
       .then(response => response.json())
       .then(data => {
         console.log(data);
@@ -48,7 +61,7 @@ const Nvram = () => {
         }));
         setItems(transformedItems);
       });
-  }, []);
+  }, [subtype]);
   const handleModelSelect = item => {
     setSelectedItem(item);
   };

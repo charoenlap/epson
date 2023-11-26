@@ -65,6 +65,7 @@ const data = [
 ];
 export default function Index() {
   const [itemsModel, setItems] = useState([]);
+  const [itemToUrl, setItemsUrl] = useState([]);
   const [selectedManual, setSelectedManual] = useState(null);
   const [selectedDiagram, setSelectedDiagram] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -89,6 +90,26 @@ export default function Index() {
     setSelectedManual(selectedItem.manual);
     setSelectedDiagram(selectedItem.diagram);
   };
+  const onChange = (selectedValue) => {
+    if (selectedValue) {
+      if (selectedValue.startsWith('AM')) {
+        setItemsUrl('AM')
+        // window.open('https://www.google.com', '_blank');
+      } else if (selectedValue.startsWith('WF')) {
+        setItemsUrl('WF')
+        // window.open('https://www.facebook.com', '_blank');
+      }
+    }
+  };
+  const btnClick = () => {
+    if(itemToUrl!=''){
+      if(itemToUrl=='AM'){
+        window.open('errorCode/WF-C21000_C20750_C20600_Rev.H_Manual/73105644.html', '_blank');
+      }else{
+        window.open('errorCode/WF-C21000_C20750_C20600_Rev.H_Manual/4883517.html', '_blank');
+      }
+    }
+  };
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -97,22 +118,48 @@ export default function Index() {
     <>
       <Row justify="center">
         <Col span={20} style={{ margin: '10px' }}>
-          <Select
-            showSearch
-            style={{
-              width: 200,
-            }}
-            placeholder="Search to Select"
-            onChange={handleModelSelect}
-            value={selectedItem}
-          >
-            {itemsModel.map(item => (
-              <Select.Option key={item.key} value={item.label}>
-                {item.label}
-              </Select.Option>
-            ))}
-          </Select>
+        <Select
+          showSearch
+          placeholder="Select a person"
+          optionFilterProp="children"
+          onChange={onChange}
+          options={[
+            {
+              value: 'AM-C4000',
+              label: 'AM-C4000',
+            },
+            {
+              value: 'AM-C5000',
+              label: 'AM-C5000',
+            },
+            {
+              value: 'AM-C6000',
+              label: 'AM-C6000',
+            },
+            {
+              value: 'WF-C20600',
+              label: 'WF-C20600',
+            },
+            {
+              value: 'WF-C20750',
+              label: 'WF-C20750',
+            },
+            {
+              value: 'WF-C21000',
+              label: 'WF-C21000',
+            },
+            {
+              value: 'WF-M21000',
+              label: 'WF-M21000',
+            },
+          ]}
+        />
         </Col>
+      </Row>
+      <Row justify="center">
+        <Col span={20} style={{ margin: '10px' }}>
+              <Button type="primary" onClick={btnClick}>Search error code</Button>
+        </Col>  
       </Row>
       <Row justify="center" style={{ margin: '20px' }}>
         <Col span={20} style={{ margin: '10px' }}>

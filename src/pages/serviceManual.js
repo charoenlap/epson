@@ -16,6 +16,9 @@ import { DownloadOutlined } from '@ant-design/icons';
 import { Select } from 'antd';
 import { withAuth } from '@/utils/middleware';
 import _ from 'lodash';
+import { useRouter } from 'next/router';
+import {useRecoilState} from 'recoil';
+import { breadcrumbState, titleState } from "@/store/page";
 const { Search } = Input;
 const { Content,Sider  } = Layout;
 function getItem(label, key, icon, children) {
@@ -71,8 +74,21 @@ const ServiceManual = () => {
   const [selectedManual, setSelectedManual] = useState(null);
   const [selectedDiagram, setSelectedDiagram] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
+  const router = useRouter();
+  const { subtype } = router.query;
+  const [bc,setBc] = useRecoilState(breadcrumbState);
   useEffect(() => {
-    fetch('/api/manual/listModelSC')
+    setBc(
+        [
+            {title:'Home',href:'/'},
+            {title:'Data analytic',href:'/intrlligent'},
+            {title:subtype,href:'/intrlligentDetail?subtype=SC-F'},
+            {title:'NVRAM',href:'/'}
+        ]
+    )
+  }, []);
+  useEffect(() => {
+    fetch(`/api/manual/listModelSC?subtype=${subtype}`)
       .then(response => response.json())
       .then(data => {
         console.log(data);
@@ -84,7 +100,7 @@ const ServiceManual = () => {
         }));
         setItems(transformedItems);
       });
-  }, []);
+  }, [subtype]);
   const handleModelSelect = (value) => {
     // Find the selected item and set the corresponding manual and diagram
     const selectedItem = itemsModel.find(item => item.label === value);

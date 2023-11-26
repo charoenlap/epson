@@ -16,6 +16,9 @@ const { Search } = Input;
 const { Content,Sider  } = Layout;
 import { Select } from 'antd';
 import { withAuth } from '@/utils/middleware';
+import { useRouter } from 'next/router';
+import {useRecoilState} from 'recoil';
+import { breadcrumbState, titleState } from "@/store/page";
 function getItem(label, key, icon, children) {
   return {
     key,
@@ -77,8 +80,22 @@ const data = [];
 const CheckErrorCode = () => {
   const [itemsModel, setItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
+  const router = useRouter();
+  const { subtype } = router.query;
+  const [bc,setBc] = useRecoilState(breadcrumbState);
+    useEffect(() => {
+        setBc(
+            [
+                {title:'Home',href:'/'},
+                {title:'Data analytic',href:'/intrlligent'},
+                {title:subtype,href:'/intrlligentDetail?subtype=SC-F'},
+                {title:'Check error code',href:'/'}
+            ]
+        )
+	}, []);
   useEffect(() => {
-    fetch('/api/manual/listModelLfp')
+    console.log(subtype);
+    fetch(`/api/manual/listModelSC?subtype=${subtype}`)
       .then(response => response.json())
       .then(data => {
         console.log(data);
@@ -91,8 +108,11 @@ const CheckErrorCode = () => {
           }));
           setItems(transformedItems);
         }
+      }).catch(error => {
+        // Handle errors here
+        console.error('Error fetching data:', error);
       });
-  }, []);
+    }, [subtype]);
   const handleModelSelect = item => {
     setSelectedItem(item);
   };

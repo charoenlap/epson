@@ -15,6 +15,9 @@ import { Table, Tag } from 'antd';
 import { Select } from 'antd';
 import { useRouter } from 'next/router';
 import { withAuth } from '@/utils/middleware';
+import {useRecoilState} from 'recoil';
+import { breadcrumbState, titleState } from "@/store/page";
+
 const { Content,Sider  } = Layout;
 function getItem(label, key, icon, children) {
   return {
@@ -185,6 +188,16 @@ const IntelligentDetail = () => {
   const { subtype } = router.query;
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [bc,setBc] = useRecoilState(breadcrumbState);
+    useEffect(() => {
+        setBc(
+            [
+                {title:'Home',href:'/'},
+                {title:'Data analytic',href:'/intrlligent'},
+                {title:subtype,href:'/intrlligentDetail?subtype=SC-F'}
+            ]
+        )
+	}, []);
   useEffect(() => {
     setLoading(true);
     fetch(`/api/manual/listModelSC?subtype=${subtype}`)
