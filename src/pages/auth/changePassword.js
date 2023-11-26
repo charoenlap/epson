@@ -20,8 +20,8 @@ const ChangePassword = () => {
             console.log(values)
             // check duplicate old password
             let old = await apiClient().post('/user/find', {username: values.username})
-            console.log('old',old)
-            if (old?.data[0]?.password == hashPassword(values.newpassword, old?.data[0]?.salt)) {
+            console.log('old',old?.data[0])
+            if (!_.isNull(old?.data[0]?.salt) && old?.data[0]?.password == hashPassword(values.newpassword, old?.data[0]?.salt)) {
                 message.error('The new password you entered is the same as old password. Please enter a different password.');
             } else {
               let newSalt = generateSalt();
@@ -33,7 +33,6 @@ const ChangePassword = () => {
                     date_changepassword: dayjs().format('YYYY-MM-DD')
                 }
                 let result = await apiClient().put('/user/update', data);
-                console.log(result)
                 if (result.status==200 && result?.data[0]?.changedRows==1) {
                     router.push('/auth/login')
                 } else {
