@@ -8,6 +8,7 @@ import {
 	theme,
 	Breadcrumb,
 	Menu,
+	Table,
 	message,
 	Col,
 	Card,
@@ -41,6 +42,7 @@ const Specification = () => {
 	const [selectedSeries, setSelectedSeries] = useState([]);
 	const [columns, setColumns] = useState();
 	const [spec, setSpec] = useState({});
+	const [childSpec, setChildSpec] = useState([])
 	const [disabledDownload, setDisabledDownload] = useState(true);
 	const router = useRouter();
 
@@ -50,7 +52,7 @@ const Specification = () => {
         form.resetFields();
 		// let resultModel = await apiClient().get('/model');
 		let results = await apiClient()
-			.get("/series", { params: { id_model: selectModel.id } })
+			.get("/v2/groupspecification", { params: { group: '*main*' } })
 			.catch((e) =>
 				message.error({ key: "series", content: "error series" })
 			);
@@ -58,41 +60,66 @@ const Specification = () => {
 		if (_.size(results?.data) > 0) {
 			setSeries(results.data);
 			setOptionSeries(
-				_.map(results.data, (v) => ({
-					label: v?.series_name,
-					value: v?.id,
-				}))
+				_.orderBy(_.map(results.data, (v) => ({
+					label: v?.compatible,
+					value: v?.compatible,
+				})), 'label', 'asc')
 			);
 			message.success({ key: "series", content: "load series succes" });
 		}
 	};
+	
+    const filterOption = (input, option) => {
+        let inputLow = _.join(_.split(_.lowerCase(input),' '),'');
+        let labelLow = _.join(_.split(_.lowerCase(option?.label),' '),'');
+        return _.startsWith(labelLow, inputLow) || inputLow==labelLow || labelLow.indexOf(inputLow) !== -1
+    }
 
-	const filterOption = (input, option) => {
-		let inputLow = _.join(_.split(_.lowerCase(input), " "), "");
-		let labelLow = _.join(_.split(_.lowerCase(option?.label), " "), "");
-		return _.startsWith(labelLow, inputLow) || inputLow == labelLow;
-	};
-
-	const getSpecification = async (idspec) => {
-		let key = "series";
+	const getSpecification = async (compatible) => {
+		let key = "specification";
         setSpec({});
-        if (idspec) {
+        if (compatible) {
             message.loading({ key: key, content: "loading ..." });
-            console.log(idspec)
+            console.log(compatible)
             let result = await apiClient()
-                .get("/specification", { params: { ['v.id_series']: idspec } })
+                .get("/v2/groupspecification", { params: { compatible: '*'+compatible+'*' } })
                 .catch((e) =>
                     message.error({ key: key, content: "error content" })
                 );
             if (_.size(result?.data) == 1) {
                 console.log('last',result.data[0]);
                 setSpec(result?.data[0]);
+				await getChildSpecification(compatible);
                 message.success({ key: key, content: "load " + key + " success" });
             } else {
                 message.error({key:key, content:'fail load'});
             }
         }
 	};
+
+	const getChildSpecification = async (compatible) => {
+		let key = "subspec";
+		let modifiedText = _.replace(compatible, /\s*\(Main Unit\)/, '');
+		console.log(modifiedText);
+        if (modifiedText) {
+            message.loading({ key: key, content: "loading ..." });
+            console.log(modifiedText)
+            let result = await apiClient()
+                .get("/v2/specification", { params: { description: '*'+modifiedText+'*'} })
+                .catch((e) =>
+                    message.error({ key: key, content: "error content" })
+                );
+            if (_.size(result?.data)>0) {
+				let noneMain = _.filter(result?.data, obj => _.lowerCase(obj.group).indexOf('main') === -1);
+				console.log('noneMain', noneMain);
+				setChildSpec(noneMain)
+                // setSpec(result?.data[0]);
+                message.success({ key: key, content: "load " + key + " success" });
+            } else {
+                message.error({key:key, content:'fail load'});
+            }
+        }
+	}
 
 	const getColumn = async () => {
 		message.loading({ key: "column", content: "loading column..." });
@@ -212,19 +239,16 @@ const Specification = () => {
 					</Descriptions>
                 </Col>
             </Row>
-            {/* <Row gutter={[12, 12]}>
+            <Row gutter={[12, 12]}>
                 <Col span={3}><h3 style={{margin:0}}>Specs / Product</h3></Col>
                 <Col span={21}>
 					<Descriptions column={1}>
 						<Descriptions.Item label="STD warranty term">
-							{spec?.std_warranty_term || "-"}
-						</Descriptions.Item>
-						<Descriptions.Item label="Lamp / Light source / Head">
-							{spec?.lamp_light_source_head || "-"}
+							{spec?.specs || "-"}
 						</Descriptions.Item>
 					</Descriptions>
                 </Col>
-            </Row> */}
+            </Row>
             <Row gutter={[12,12]}>
                 <Col span={3}><h3 style={{margin:0}}>Link Brochure</h3></Col>
                 <Col span={21}>
@@ -258,6 +282,31 @@ const Specification = () => {
 							{spec?.remark || "-"}
 						</Descriptions.Item>
 					</Descriptions>
+                </Col>
+            </Row>
+            <Row gutter={[12,12]}>
+                <Col span={24}>
+					{childSpec && <Table 
+						size={'small'}
+						width={'100%'}
+						columns={_.chain(childSpec[0])
+						.keys()
+						.filter(key => !_.includes(['id','no'], key))
+						.map(key => ({
+							title: _.startCase(key), // Convert key to title case for column title
+							dataIndex: key,
+							key: key,
+						}))
+						.value()} 
+						dataSource={_.map(childSpec, item =>
+							_.chain(item)
+								.omit(['id', 'no']) // Exclude "id" and "no" fields from each object
+								.mapValues(value => {
+									// Modify values if needed here
+									return value;
+								})
+								.value()
+						)} />}
                 </Col>
             </Row>
 		</>
