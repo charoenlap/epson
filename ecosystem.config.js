@@ -13,7 +13,7 @@ module.exports = {
             repo : 'git@github.com:charoenlap/epson.git',
             path : '/home/charoenlap/epson',
             'pre-deploy' : 'git fetch --all && git reset --hard && git clean  -d  -f .',
-            'post-deploy' : 'npm install --legacy-peer-deps && npm run build && pm2 startOrRestart ecosystem.config.js && pm2 save'
+            'post-deploy' : 'pm2 startOrRestart ecosystem.config.js && pm2 save'
         },
     }
 };
