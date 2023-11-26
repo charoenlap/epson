@@ -188,16 +188,6 @@ const IntelligentDetail = () => {
   const { subtype } = router.query;
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [bc,setBc] = useRecoilState(breadcrumbState);
-    useEffect(() => {
-        setBc(
-            [
-                {title:'Home',href:'/'},
-                {title:'Data analytic',href:'/intrlligent'},
-                {title:subtype,href:'/intrlligentDetail?subtype=SC-F'}
-            ]
-        )
-	}, []);
   useEffect(() => {
     setLoading(true);
     fetch(`/api/manual/listModelSC?subtype=${subtype}`)

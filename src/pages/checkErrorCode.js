@@ -82,17 +82,6 @@ const CheckErrorCode = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const router = useRouter();
   const { subtype } = router.query;
-  const [bc,setBc] = useRecoilState(breadcrumbState);
-    useEffect(() => {
-        setBc(
-            [
-                {title:'Home',href:'/'},
-                {title:'Data analytic',href:'/intrlligent'},
-                {title:subtype,href:'/intrlligentDetail?subtype=SC-F'},
-                {title:'Check error code',href:'/'}
-            ]
-        )
-	}, []);
   useEffect(() => {
     console.log(subtype);
     fetch(`/api/manual/listModelSC?subtype=${subtype}`)
