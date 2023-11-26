@@ -12,7 +12,9 @@
     "lint": "next lint",
     "sit": "cross-env NODE_ENV=sit CONFIG_ENV=env.sit.local next dev",
     "local": "cross-env NODE_ENV=local CONFIG_ENV=env.local next dev",
-    "pkg": "pkg . --out-dir dist --output build"
+    "pkg": "pkg . --out-dir dist --output build",
+    "cleangit": "git fetch --all && git reset --hard && git clean -d -f .",
+    "deploy": "npm run cleangit && pm2 startOrRestart ecosystem.config.js && pm2 save"
   },
   "dependencies": {
     "@ant-design/icons": "^5.1.4",
