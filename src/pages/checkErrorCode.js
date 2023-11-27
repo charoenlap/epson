@@ -78,8 +78,10 @@ const data = [];
 const CheckErrorCode = () => {
   const [itemsModel, setItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
+  const { subtype } = router.query;
   useEffect(() => {
-    fetch('/api/manual/listModelLfp')
+    console.log(subtype);
+    fetch(`/api/manual/listModelSC?subtype=${subtype}`)
       .then(response => response.json())
       .then(data => {
         console.log(data);
@@ -92,8 +94,11 @@ const CheckErrorCode = () => {
           }));
           setItems(transformedItems);
         }
+      }).catch(error => {
+        // Handle errors here
+        console.error('Error fetching data:', error);
       });
-  }, []);
+    }, [subtype]);
   const handleModelSelect = item => {
     setSelectedItem(item);
   };

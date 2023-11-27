@@ -15,7 +15,10 @@ import { LaptopOutlined, NotificationOutlined } from '@ant-design/icons';
 import { DownloadOutlined } from '@ant-design/icons';
 import { Select } from 'antd';
 import { withAuth } from '@/utils/middleware';
+import { useRouter } from 'next/router';
 import _ from 'lodash';
+import {useRecoilState} from 'recoil';
+import { breadcrumbState, titleState } from "@/store/page";
 const { Search } = Input;
 const { Content,Sider  } = Layout;
 function getItem(label, key, icon, children) {
@@ -28,10 +31,12 @@ function getItem(label, key, icon, children) {
 }
 const data = [];
 const Nvram = () => {
+  const router = useRouter();
+  const { subtype } = router.query;
   const [itemsModel, setItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   useEffect(() => {
-    fetch('/api/manual/listModelSC')
+    fetch(`/api/manual/listModelSC?subtype=${subtype}`)
       .then(response => response.json())
       .then(data => {
         console.log(data);
@@ -44,7 +49,7 @@ const Nvram = () => {
         }));
         setItems(transformedItems);
       });
-  }, []);
+  }, [subtype]);
   const handleModelSelect = item => {
     setSelectedItem(item);
   };

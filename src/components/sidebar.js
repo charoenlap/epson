@@ -16,7 +16,7 @@ const Sidebar = () => {
     const [currentMenuItem, setCurrentMenuItem] = useState([])
     const router = useRouter();
     const [items, setItems] = useState([]);
-    
+    const { subtype } = router.query;
     
     const handleClick = e => {
         let mainKey = e.key;
@@ -47,6 +47,13 @@ const Sidebar = () => {
                 })
             }
         })
+        console.log(router.query.subtype);
+        if (router.query?.subtype) {
+            data.push({
+                title: router.query?.subtype,
+                href: '?subtype='+router.query?.subtype
+            })
+        }
         setBc(_.uniqBy(data, 'title'))
         router.push(e?.item?.props?.href)
     }
@@ -68,7 +75,7 @@ const Sidebar = () => {
         });
         setCurrentMenuItem(selected);
     }
-
+    
     useEffect(() => {
         if (router.pathname === '/intrlligentDetail' || router.pathname === '/checkErrorCode' || router.pathname === '/nvram' || router.pathname === '/serviceManual') {
             setItems([
@@ -79,12 +86,12 @@ const Sidebar = () => {
                     { key: 'manual', label: 'Manual', href: '/manualDetail' },
                     { key: 'knowledgebase', label: 'Knowledge Base', href: '/knowledgeBase' },
                 ] },
-                { key: 'dataanalytics', label: 'Data Analytics LFP', children: [
+                { key: 'dataanalytics', label: 'Data Analytics', children: [
                     { key: 'listdataanalytic', label: 'List Model Analytic', href: '/intelligent'},
-                    { key: 'dataanalytic', label: 'Data Analytic', href: '/intrlligentDetail'},
-                    { key: 'checkerrorcode', label: 'Check Error Code', href: '/checkErrorCode'},
-                    { key: 'nvram', label: 'NVRAM Viewer', href: '/nvram' },
-                    { key: 'servicemanual', label: 'Service Manual & Diagram', href: '/serviceManual' },
+                    { key: 'dataanalytic', label: 'Data Analytic', href: `/intrlligentDetail?subtype=${subtype}`},
+                    { key: 'checkerrorcode', label: 'Check Error Code', href: `/checkErrorCode?subtype=${subtype}`},
+                    { key: 'nvram', label: 'NVRAM Viewer', href: `/nvram?subtype=${subtype}` },
+                    { key: 'servicemanual', label: 'Service Manual & Diagram', href: `/serviceManual?subtype=${subtype}` },
                 ] },
                 { key:'divider', type: 'divider' },
                 { key: 'logout', label: 'Logout', href: '/auth/logout' },
@@ -155,7 +162,7 @@ const Sidebar = () => {
             ]);
         }
         
-    }, [router.pathname])
+    }, [router.pathname,subtype])
 
     useEffect(() => {
         findCurrent(router.pathname);
@@ -177,8 +184,8 @@ const Sidebar = () => {
                     id={'menuside'}
                     theme={'dark'}
                     mode="inline"
-                    defaultSelectedKeys={['home']}
-                    defaultOpenKeys={['datacenter','dataanalytics']}
+                    // defaultSelectedKeys={['home']}
+                    // defaultOpenKeys={['datacenter','dataanalytics']}
                     selectedKeys={currentMenuItem}
                     items={_.filter(items, item => {
                         if (item.children) {

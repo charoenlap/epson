@@ -17,6 +17,7 @@ const { Content,Sider  } = Layout;
 import Link from 'next/link';
 import { getSession } from 'next-auth/react';
 import { withAuth } from '@/utils/middleware';
+import { Select } from 'antd';
 function getItem(label, key, icon, children) {
   return {
     key,
@@ -68,15 +69,14 @@ const OtherCheckErrorCodeLIJ = () => {
   const [itemsModel, setItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   useEffect(() => {
-    fetch('/api/manual/listModelRips')
+    fetch('/api/manual/listModelJIL')
       .then(response => response.json())
       .then(data => {
         console.log(data);
-        const transformedItems = data.map(item => ({
+        const dataArray = Array.isArray(data) ? data : [data];
+        const transformedItems = dataArray.map(item => ({
           key: item.model_name,
           label: item.model_name,
-          manual: item.manual,
-          diagram: item.diagram,
           typeModel:'RIPs'
         }));
         setItems(transformedItems);
@@ -97,7 +97,7 @@ const OtherCheckErrorCodeLIJ = () => {
       const response = await axios.post('/api/errorCode/find', {
         model: selectedItem,
         errorCode: errorCode,
-        type:'RIPs'
+        type:'LIJ'
       });
       const responseData = response.data.map(item => ({
         key: item.id, // Unique key for each row
@@ -113,6 +113,25 @@ const OtherCheckErrorCodeLIJ = () => {
   };
   return (
     <>
+      <Row justify="center">
+        <Col span={20} style={{ margin: '10px' }}>
+          <Select
+            showSearch
+            style={{
+              width: 200,
+            }}
+            placeholder="Search to Select"
+            onChange={handleModelSelect}
+            value={selectedItem}
+          >
+            {itemsModel.map(item => (
+              <Select.Option key={item.key} value={item.label}>
+                {item.label}
+              </Select.Option>
+            ))}
+          </Select>
+        </Col>
+      </Row>
       <Row justify="center">
         <Col span={20} style={{ margin: '10px' }}>
           <Link href="/errorCode/WF-C21000_C20750_C20600_Rev.H_Manual/4898026.html" target="_blank">

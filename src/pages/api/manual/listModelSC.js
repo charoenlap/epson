@@ -23,7 +23,7 @@ export default async function handler(req, res) {
     ORDER BY
       model_name
   `;
-
+  // console.log(sql,subtype);
   const connection = await connectDb();
 
   try {

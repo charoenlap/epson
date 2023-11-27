@@ -72,8 +72,10 @@ const ServiceManual = () => {
   const [selectedManual, setSelectedManual] = useState(null);
   const [selectedDiagram, setSelectedDiagram] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
+  const router = useRouter();
+  const { subtype } = router.query;
   useEffect(() => {
-    fetch('/api/manual/listModelSC')
+    fetch(`/api/manual/listModelSC?subtype=${subtype}`)
       .then(response => response.json())
       .then(data => {
         console.log(data);
@@ -85,7 +87,7 @@ const ServiceManual = () => {
         }));
         setItems(transformedItems);
       });
-  }, []);
+  }, [subtype]);
   const handleModelSelect = (value) => {
     // Find the selected item and set the corresponding manual and diagram
     const selectedItem = itemsModel.find(item => item.label === value);

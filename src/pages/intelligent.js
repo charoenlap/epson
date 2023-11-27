@@ -5,7 +5,16 @@ import { Card } from 'antd';
 import { getSession, useSession } from 'next-auth/react';
 const { Meta } = Card;
 import Link from 'next/link';
+import {useRecoilState} from 'recoil';
+import { breadcrumbState, titleState } from "@/store/page";
 const Intelligent = () => {
+    const [bc, setBc] = useRecoilState(breadcrumbState)
+    useEffect(() => {
+        setBc([
+            {title:'Home', href:'/'},
+            {title:'Data Analytics', href:'/intelligent'},
+        ])
+    }, [])
     
   return (
     <>
@@ -16,7 +25,7 @@ const Intelligent = () => {
         </Row>
         <Row justify="center">
             <Col span={5}  style={{ margin: '10px' }}>
-                <Link href="/intrlligentDetail?subtype=SC-F" >
+                <Link href="/intrlligentDetail?subtype=SC-F" onClick={()=>setBc([..._.filter(bc, v => !_.startsWith(v.href, '?subtype=')),{title:'SC-F', href:'?subtype=SC-F'}])}>
                     <Card
                         hoverable
                         style={{
@@ -32,7 +41,7 @@ const Intelligent = () => {
                 </Link>
             </Col>
             <Col span={5}  style={{ margin: '10px' }}>
-                <Link href="/intrlligentDetail?subtype=SC-P">
+                <Link href="/intrlligentDetail?subtype=SC-P" onClick={()=>setBc([..._.filter(bc, v => !_.startsWith(v.href, '?subtype=')),{title:'SC-P', href:'?subtype=SC-P'}])}>
                     <Card
                         hoverable
                         style={{
@@ -47,7 +56,7 @@ const Intelligent = () => {
                 </Link>
             </Col>
             <Col span={5}  style={{ margin: '10px' }}>
-                <Link href="/intrlligentDetail?subtype=SC-S">
+                <Link href="/intrlligentDetail?subtype=SC-S" onClick={()=>setBc([..._.filter(bc, v => !_.startsWith(v.href, '?subtype=')),{title:'SC-S', href:'?subtype=SC-S'}])}>
                     <Card
                         hoverable
                         style={{
@@ -62,7 +71,7 @@ const Intelligent = () => {
                 </Link>
             </Col>
             <Col span={5}  style={{ margin: '10px' }}>
-                <Link href="/intrlligentDetail?subtype=SC-D">
+                <Link href="/intrlligentDetail?subtype=SL-D" onClick={()=>setBc([..._.filter(bc, v => !_.startsWith(v.href, '?subtype=')),{title:'SL-D', href:'?subtype=SL-D'}])}>
                     <Card
                         hoverable
                         style={{
@@ -84,7 +93,11 @@ const Intelligent = () => {
         </Row>
         <Row justify="center">
             <Col span={5}  style={{ margin: '10px' }}>
-                <Link href="/projector">
+                <Link href="/projector" onClick={()=>setBc([
+                    {title:'Home', href:'/'},
+                    {title:'Data Analytics Projector'},
+                    {title:'Data Analytic', href: '/projector'},
+                ])}>
                     <Card
                         hoverable
                         style={{
@@ -99,7 +112,11 @@ const Intelligent = () => {
                 </Link>
             </Col>
             <Col span={5}  style={{ margin: '10px' }}>
-                <Link href="/otherCheckErrorCodeLIJ">
+                <Link href="/otherCheckErrorCodeLIJ" onClick={()=>setBc([
+                    {title:'Home', href:'/'},
+                    {title:'Data Analytics LIJ'},
+                    {title:'Check Error Code', href: '/otherCheckErrorCodeLIJ'},
+                ])}>
                     <Card
                         hoverable
                         style={{
@@ -114,7 +131,11 @@ const Intelligent = () => {
                 </Link>
             </Col>
             <Col span={5}  style={{ margin: '10px' }}>
-                <Link href="/otherCheckErrorCode">
+                <Link href="/otherCheckErrorCode" onClick={()=>setBc([
+                    {title:'Home', href:'/'},
+                    {title:'Data Analytics RIPs'},
+                    {title:'Check Error Code', href: '/otherCheckErrorCode'},
+                ])}>
                     <Card
                         hoverable
                         style={{
