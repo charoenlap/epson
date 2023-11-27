@@ -14,6 +14,8 @@ import { Layout,theme,  } from 'antd';
 import { LaptopOutlined, NotificationOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import { Select } from 'antd';
+import { withAuth } from '@/utils/middleware';
+import { getSession } from 'next-auth/react';
 const { Search } = Input;
 const { Content,Sider  } = Layout;
 function getItem(label, key, icon, children) {
@@ -64,7 +66,7 @@ const columns = [
 ];
 const data = [];
 
-export default function Index() {
+const OtherCheckErrorCode = () => {
   const [itemsModel, setItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   useEffect(() => {
@@ -158,3 +160,13 @@ export default function Index() {
     </>
   );
 }
+
+export async function getServerSideProps(context) {
+	 const session = await getSession(context);
+	if (session==null) {
+		return { redirect: { destination: '/auth/login?authen', permanent: false } }
+	}
+	return {props:{}}
+}
+
+export default withAuth(OtherCheckErrorCode)

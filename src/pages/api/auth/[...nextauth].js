@@ -30,9 +30,9 @@ export const authOptions = {
 				let result = await apiClient().post('/user/login', {username:credentials.username, password: hashPassword(credentials.password, salt)}).catch(e => console.log(e))
 				if (result?.status==200 && _.size(result?.data)>0) {
 					await apiClient().put('/user/attempt', {username: credentials.username, attempt: 0})
-					console.log(credentials.username);
+					// console.log(credentials.username);
 					let userInfo = await apiClient().get('/user', {params:{username: credentials.username}})
-					console.log(userInfo.data[0]);
+					// console.log(userInfo.data[0]);
 					return {
 						username: _.result(userInfo, 'data[0].username'),
 						permissions: _.result(userInfo, 'data[0].permissions')
@@ -62,10 +62,17 @@ export const authOptions = {
 	callbacks: {
 		// async signIn(user, account, profile) {
 		// 	console.log(user, account, profile)
-		// 	return true;
+		// 	if (user?.username) {
+		// 		return true;
+		// 	}
+		// 	return false;
+		// },
+		// async authorized({ req, token }) {
+		// 	console.log('authorized', token);
+		// 	if (token) return true;
 		// },
 		async jwt({ token, user, account, profile, isNewUser }) {
-			if (account?.provider == "credentials" && user.username) {
+			if (account?.provider == "credentials" && user?.username) {
 				token.username = user.username;
 				token.user = user.username;
 				token.permissions = user?.permissions;
@@ -74,18 +81,22 @@ export const authOptions = {
 			return token;
 		},
 		async session({ session, user, token }) {
+			// console.log('session',session, token?.username);
 			if (token?.username) {
 				session.user.username = token.username;
 				session.user.user = token.username;
 				session.user.permissions = token.permissions;
+				delete session.user.name;
+				delete session.user.email;
+				delete session.user.image;
 			}
-			// console.log('session', session, token)
+			// console.log('session', session)
 			return session;
 		},
-		// async redirect({ url, baseUrl }) {
-		// 	console.log(url, baseUrl)
-		// 	return baseUrl
-		// }
+		async redirect({ url, baseUrl }) {
+			// console.log(url, baseUrl)
+			return baseUrl
+		}
 	},
 	pages: {
 		signIn: "/auth/login",

@@ -30,7 +30,7 @@ export default async function handler(req, res) {
         const connection = await connectDb();
         const [result] = await connection.query(sql, [objParam]);
         
-        connection.end();
+         
         console.log(result)
         res.status(200).json({data: encode(result)})
     } else {

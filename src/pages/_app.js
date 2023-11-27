@@ -16,7 +16,6 @@ export default function App({
 	Component,
 	pageProps: { session, status, ...pageProps },
 }) {
-	const [isAuth, setIsAuth] = useState(false);
 	const {
 		token: { colorBgContainer },
 	} = theme.useToken();
@@ -24,7 +23,6 @@ export default function App({
 	const isUnderAdminSection = router.pathname.startsWith('/admin');
 	const isExactAdminRoute = router.pathname === '/admin' || router.pathname === '/admin/index';
 	const LayoutComponent = isUnderAdminSection ? (isExactAdminRoute ? BlankLayout : AdminLayout) : DefaultLayout;
-
 
 	return (
 		<SessionProvider session={session}>
@@ -45,35 +43,6 @@ export default function App({
 					<LayoutComponent>
 						<Component {...pageProps} />
 					</LayoutComponent>
-					{/* <Layout>
-						<HeaderMenu />
-						<Layout>
-							{isAuth && <Sidebar />}
-							<Layout
-								style={{
-									padding: "0 24px 24px",
-								}}
-							>
-								{isAuth && <Breadcrumbs />}
-								<Content
-									style={{
-										...(isAuth
-											? {
-													padding: 24,
-													margin: 0,
-													minHeight:
-														"calc(100vh - 142px)",
-													background:
-														colorBgContainer,
-											  }
-											: {}),
-									}}
-								>
-									<Component {...pageProps} />
-								</Content>
-							</Layout>
-						</Layout>
-					</Layout> */}
 				</RecoilRoot>
 			</ConfigProvider>
 		</SessionProvider>

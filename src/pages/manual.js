@@ -10,6 +10,7 @@ import { Breadcrumb } from 'antd';
 import { apiClient } from '../utils/apiClient';
 import _ from 'lodash';
 import { withAuth } from '@/utils/middleware';
+import { getSession } from 'next-auth/react';
 const { Meta } = Card;
 
 const Manual = () => {
@@ -90,6 +91,14 @@ const Manual = () => {
         </Space>
     </>
   )
+}
+
+export async function getServerSideProps(context) {
+	 const session = await getSession(context);
+	if (session==null) {
+		return { redirect: { destination: '/auth/login?authen', permanent: false } }
+	}
+	return {props:{}}
 }
 
 export default withAuth(Manual)

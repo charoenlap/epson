@@ -20,9 +20,11 @@ import MyModel from "@/components/myModel";
 import { useRecoilState } from "recoil";
 import { modelsState, selectModelState } from "@/store/data";
 import Link from "next/link";
+import { withAuth } from "@/utils/middleware";
+import { getSession } from "next-auth/react";
 const { Meta } = Card;
 
-export default function Index() {
+const ManualDetail = () => {
 	const [form] = Form.useForm();
 	const [options, setOptions] = useState([]);
     const [optionSeries, setOptionSeries] = useState([])
@@ -128,3 +130,13 @@ export default function Index() {
 		</>
 	);
 }
+
+export async function getServerSideProps(context) {
+	 const session = await getSession(context);
+	if (session==null) {
+		return { redirect: { destination: '/auth/login?authen', permanent: false } }
+	}
+	return {props:{}}
+}
+
+export default withAuth(ManualDetail)

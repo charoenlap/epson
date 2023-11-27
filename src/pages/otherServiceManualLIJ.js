@@ -17,6 +17,8 @@ import { Select } from 'antd';
 const { Search } = Input;
 const { Content,Sider  } = Layout;
 import Link from 'next/link';
+import { withAuth } from '@/utils/middleware';
+import { getSession } from 'next-auth/react';
 function getItem(label, key, icon, children) {
   return {
     key,
@@ -63,7 +65,7 @@ const data = [
     part: 'FA61002 “Print Head”',
   },
 ];
-export default function Index() {
+const OtherServiceManualLIJ = () => {
   const [itemsModel, setItems] = useState([]);
   const [itemToUrl, setItemsUrl] = useState([]);
   const [selectedManual, setSelectedManual] = useState(null);
@@ -184,3 +186,13 @@ export default function Index() {
     </>
   );
 }
+
+export async function getServerSideProps(context) {
+	 const session = await getSession(context);
+	if (session==null) {
+		return { redirect: { destination: '/auth/login?authen', permanent: false } }
+	}
+	return {props:{}}
+}
+
+export default withAuth(OtherServiceManualLIJ)

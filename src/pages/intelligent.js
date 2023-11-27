@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { withAuth } from "@/utils/middleware";
 import{  Col, Image, Row  } from 'antd';
 import { Card } from 'antd';
-import { useSession } from 'next-auth/react';
+import { getSession, useSession } from 'next-auth/react';
 const { Meta } = Card;
 import Link from 'next/link';
 import {useRecoilState} from 'recoil';
@@ -152,6 +152,14 @@ const Intelligent = () => {
         </Row>
     </>
   )
+}
+
+export async function getServerSideProps(context) {
+	 const session = await getSession(context);
+	if (session==null) {
+		return { redirect: { destination: '/auth/login?authen', permanent: false } }
+	}
+	return {props:{}}
 }
 
 export default withAuth(Intelligent)

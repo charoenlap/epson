@@ -15,9 +15,7 @@ import { Table, Tag } from 'antd';
 import { Select } from 'antd';
 import { useRouter } from 'next/router';
 import { withAuth } from '@/utils/middleware';
-import {useRecoilState} from 'recoil';
-import { breadcrumbState, titleState } from "@/store/page";
-
+import { getSession } from 'next-auth/react';
 const { Content,Sider  } = Layout;
 function getItem(label, key, icon, children) {
   return {
@@ -345,6 +343,14 @@ const IntelligentDetail = () => {
       </Row>
     </>
   );
+}
+
+export async function getServerSideProps(context) {
+	 const session = await getSession(context);
+	if (session==null) {
+		return { redirect: { destination: '/auth/login?authen', permanent: false } }
+	}
+	return {props:{}}
 }
 
 export default withAuth(IntelligentDetail)

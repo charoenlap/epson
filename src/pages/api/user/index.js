@@ -19,12 +19,14 @@ export default async function handler(req, res) {
       sql += 'LEFT JOIN ep_permissions ep on erop.permission_id = ep.id ';
       sql += where
       sql += 'GROUP BY u.id ';
-      console.log(sql, _.values(params))
+      // console.log(sql, _.values(params))
       let [result] = await connection.query(sql, (_.size(params)>0?_.values(params):null), (err,results) => {
         console.error(err);
         console.log(results);
       })
 
+      
+      console.log(result);
       res.status(200).json({data:encode(result)});
     } else if (method=='post') {
       let col = _.join(_.keys(data), ',');
@@ -39,7 +41,7 @@ export default async function handler(req, res) {
           console.log(results)
         }
       );
-      connection.end();
+      
       res.status(200).json({data: encode(result)})
     } else if (method=='put') {
       console.log(params,data)
@@ -55,7 +57,7 @@ export default async function handler(req, res) {
           console.log(results)
         }
       );
-      connection.end();
+      
       res.status(200).json({data: encode(result)})
     } else if (method=='delete') {
       let where = _.join(_.map(params, (v,k) => `${k}='${v}'`), ' AND ')
@@ -69,15 +71,18 @@ export default async function handler(req, res) {
           console.log(results)
         }
       );
-      connection.end();
+      
       res.status(200).json({data: encode(result)})
     } else {
+      
       res.status(405).send('Method not allowed')
     }
+    
   } catch (error) {
     console.error('Error:', error);
+    
     return res.status(500).json({ error: 'Server error' });
   }finally {
-    connection.end();; // Release the connection back to the pool
+    ; // Release the connection back to the pool
   }
 }

@@ -8,6 +8,7 @@ public/upload/manual/*
 public/upload/diagram/*
 public/upload/lfp/*
 public/upload/projector/*
+public/pdf/*
 # testing
 /coverage
 

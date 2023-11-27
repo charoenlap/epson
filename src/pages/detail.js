@@ -15,6 +15,8 @@ import {
     Tabs,
   } from 'antd';
   import { TreeSelect } from 'antd';
+import { withAuth } from '@/utils/middleware';
+import { getSession } from 'next-auth/react';
   
   const { TabPane } = Tabs;
 const { Header, Content, Footer, Sider } = Layout;
@@ -72,7 +74,7 @@ for (let i = 10; i < 36; i++) {
 const handleChange = (value) => {
   console.log(`selected ${value}`);
 };
-const App = () => {
+const Detail = () => {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -187,4 +189,13 @@ const App = () => {
     </Layout>
   );
 };
-export default App;
+
+export async function getServerSideProps(context) {
+	 const session = await getSession(context);
+	if (session==null) {
+		return { redirect: { destination: '/auth/login?authen', permanent: false } }
+	}
+	return {props:{}}
+}
+
+export default withAuth(Detail)

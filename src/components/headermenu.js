@@ -16,7 +16,7 @@ const HeaderMenu = () => {
       }}
     >
       {/* <div className="demo-logo" /> */}
-      <Image alt="example" preview={false} src="../../../images/logo.png" width={100}/>
+      {/* <Image alt="example" preview={false} src="../../../images/logo.png" width={100}/> */}
       {/* <Menu
         theme="dark"
         mode="horizontal"
