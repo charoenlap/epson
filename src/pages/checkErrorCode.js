@@ -16,6 +16,7 @@ const { Search } = Input;
 const { Content,Sider  } = Layout;
 import { Select } from 'antd';
 import { withAuth } from '@/utils/middleware';
+import { getSession } from 'next-auth/react';
 function getItem(label, key, icon, children) {
   return {
     key,
@@ -168,6 +169,14 @@ const CheckErrorCode = () => {
       </Row>
     </>
   );
+}
+
+export async function getServerSideProps(context) {
+	 const session = await getSession(context);
+	if (session==null) {
+		return { redirect: { destination: '/auth/login?authen', permanent: false } }
+	}
+	return {props:{}}
 }
 
 export default withAuth(CheckErrorCode)

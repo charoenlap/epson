@@ -37,7 +37,7 @@ export default async function handler(req, res) {
           console.log(results)
         }
       );
-      connection.end();
+       
       res.status(200).json({data: encode(result)})
     } else if (method=='put') {
       console.log(params,data)
@@ -53,7 +53,7 @@ export default async function handler(req, res) {
           console.log(results)
         }
       );
-      connection.end();
+       
       res.status(200).json({data: encode(result)})
     } else if (method=='delete') {
       let where = _.join(_.map(params, (v,k) => `${k}='${v}'`), ' AND ')
@@ -67,7 +67,7 @@ export default async function handler(req, res) {
           console.log(results)
         }
       );
-      connection.end();
+       
       res.status(200).json({data: encode(result)})
     } else {
       res.status(405).send('Method not allowed')
@@ -76,6 +76,6 @@ export default async function handler(req, res) {
     console.error('Error:', error);
     // return res.status(500).json({ error: 'Server error' });
   }finally {
-    connection.end();; // Release the connection back to the pool
+     ; // Release the connection back to the pool
   }
 }

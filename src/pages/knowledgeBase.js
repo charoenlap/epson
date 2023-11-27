@@ -21,6 +21,7 @@ import { useRecoilState } from "recoil";
 import { modelsState, selectModelState } from "@/store/data";
 import Link from "next/link";
 import { withAuth } from "@/utils/middleware";
+import { getSession } from "next-auth/react";
 const { Meta } = Card;
 
 const KnowledgeBase = () => {
@@ -51,6 +52,7 @@ const KnowledgeBase = () => {
 				model: nowModel?.folder,
 				// series: series
 			}
+			console.log('params',params);
 			if (thisSeries) {
 				params.series = thisSeries
 			}
@@ -127,6 +129,14 @@ const KnowledgeBase = () => {
       </Row>
 		</>
 	);
+}
+
+export async function getServerSideProps(context) {
+	 const session = await getSession(context);
+	if (session==null) {
+		return { redirect: { destination: '/auth/login?authen', permanent: false } }
+	}
+	return {props:{}}
 }
 
 export default withAuth(KnowledgeBase)

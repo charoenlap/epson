@@ -9,6 +9,7 @@ import MyModel from "@/components/myModel";
 import { selectModelState } from '@/store/data';
 import Link from 'next/link';
 import { withAuth } from '@/utils/middleware';
+import { getSession } from 'next-auth/react';
 const { Content,Sider  } = Layout;
 const { Meta } = Card;
 function getItem(label, key, icon, children) {
@@ -252,6 +253,14 @@ const Comparison = () => {
         </Row>
     </>
   )
+}
+
+export async function getServerSideProps(context) {
+	 const session = await getSession(context);
+	if (session==null) {
+		return { redirect: { destination: '/auth/login?authen', permanent: false } }
+	}
+	return {props:{}}
 }
 
 export default withAuth(Comparison)

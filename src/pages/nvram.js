@@ -88,4 +88,12 @@ const Nvram = () => {
   );
 }
 
+export async function getServerSideProps(context) {
+	 const session = await getSession(context);
+	if (session==null) {
+		return { redirect: { destination: '/auth/login?authen', permanent: false } }
+	}
+	return {props:{}}
+}
+
 export default withAuth(Nvram)

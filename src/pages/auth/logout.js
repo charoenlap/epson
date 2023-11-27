@@ -1,13 +1,20 @@
 import React, { useEffect } from 'react'
-import { signOut } from 'next-auth/react'
+import { getSession, signOut, useSession } from 'next-auth/react'
+import { useRouter } from 'next/router';
 
 const Logout = () => {
-  useEffect(() => {
+  const {data:session, status} = useSession();
+  const router = useRouter();
+
+  console.log(status);
+  if (status=='authenticated') {
     signOut({ callbackUrl: '/auth/login' });
-  }, [])
+  } else if (status=='unauthenticated') {
+    router.push('/auth/login');
+  }
   
   return (
-    <div>Logout</div>
+    <div></div>
   )
 }
 

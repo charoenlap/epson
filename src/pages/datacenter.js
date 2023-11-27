@@ -7,6 +7,7 @@ import { selectModelState } from "@/store/data";
 import { useRecoilState } from "recoil";
 import { useRouter } from "next/router.js";
 import _ from 'lodash';
+import { getSession } from "next-auth/react";
 
 const Datacenter = () => {
 	const [selectModel,setSelectModel] = useRecoilState(selectModelState);
@@ -39,7 +40,7 @@ const Datacenter = () => {
 				<Row justify="center">
 				{
 					_.size(lists)>0 && _.map(lists, val => (
-						<Col span={4} >
+						<Col span={6}>
 							<Button type="link" onClick={()=>{
 								setSelectModel(val);
 								router.push('/specification')
@@ -55,6 +56,14 @@ const Datacenter = () => {
 			</Card>
 		</>
 	);
+}
+
+export async function getServerSideProps(context) {
+	 const session = await getSession(context);
+	if (session==null) {
+		return { redirect: { destination: '/auth/login?authen', permanent: false } }
+	}
+	return {props:{}}
 }
 
 export default withAuth(Datacenter);

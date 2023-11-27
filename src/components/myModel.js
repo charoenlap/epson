@@ -48,7 +48,7 @@ const MyModel = () => {
             <Row gutter={[24,24]} justify={'center'}>
             {
                 _.map(models, val => (
-                    <Col span={8} >
+                    <Col span={6}>
                         <Button type="link" onClick={()=>{
                             setSelectModel(val);
                             // modal.destroy();

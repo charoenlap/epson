@@ -15,6 +15,8 @@ import { Table, Tag } from 'antd';
 import { Select } from 'antd';
 import { Modal } from 'antd';
 import Link from 'next/link';
+import { getSession } from 'next-auth/react';
+import { withAuth } from '@/utils/middleware';
 const { Content,Sider  } = Layout;
 const {Option} = Select;
 function getItem(label, key, icon, children) {
@@ -87,7 +89,7 @@ const propsCalculate = {
   action: '/api/analytic/readfile',
   method: 'post',
 };
-export default function Index() {
+const Projector = () => {
   const [dataResult, setResponseData] = useState([]);
   const [dataResultDetail, setResponseDataDetail] = useState([]);
   const [itemsModel, setItems] = useState([]);
@@ -225,3 +227,13 @@ export default function Index() {
     </>
   );
 }
+
+export async function getServerSideProps(context) {
+	const session = await getsess();
+	if (session==null) {
+		return { redirect: { destination: '/auth/login?authen', permanent: false } }
+	}
+	return {props:{}}
+}
+
+export default withAuth(ProjectorServiceManual)

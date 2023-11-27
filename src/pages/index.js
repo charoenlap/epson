@@ -6,19 +6,10 @@ import {
 	HomeOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { withAuth } from "@/utils/middleware";
+import { getSession, useSession } from "next-auth/react";
 const { Meta } = Card;
-const Index = () => {
-	const { data: session, status } = useSession();
-	const router = useRouter();
-	useEffect(() => {
-		if (status === "unauthenticated") {
-			router.push("/auth/login");
-		}
-	}, [session]);
-
+const Home = () => {
 	return (
 		<Row gutter={[12,12]}>
 			<Col span={12}>
@@ -75,4 +66,13 @@ const Index = () => {
 	);
 };
 
-export default withAuth(Index);
+export async function getServerSideProps(context) {
+	const session = await getSession(context);
+	console.log(session==null, 'index');
+	if (session==null) {
+		return { redirect: { destination: '/auth/login?authen', permanent: false } }
+	}
+	return {props:{data:{}}}
+}
+
+export default Home;

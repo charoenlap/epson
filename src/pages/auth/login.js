@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSession, signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { Form, Input, Button, message } from 'antd';
+import { Form, Input, Button, message, Row, Col, Image } from 'antd';
 import { apiClient } from '@/utils/apiClient';
 import dayjs from 'dayjs';
 import { useRecoilState } from 'recoil';
@@ -17,7 +17,7 @@ export default function Login() {
     const checkPassword3Month = async (username) => {
       let result = await apiClient().post('/user/find', {username: username})
       let condition = dayjs(_.result(result, 'data[0].date_changepassword')).isBefore(dayjs().subtract(3,'months').format('YYYY-MM-DD'), 'day'); // > 3 month true
-      console.log('condition',condition);
+      console.log('condition 3 month',condition);
       return {
         condition,
         attempt: _.result(result, 'data[0].fail_attempt'),
@@ -34,12 +34,13 @@ export default function Login() {
         setUser(values?.username);
         router.push('/auth/changePassword');
       } else {
-        let result = await signIn('credentials', {...values, redirect: false, callbackUrl: '/' })
+        let result = await signIn('credentials', {...values, redirect: false })
         if (result?.ok == false) {
           router.push('/auth/login?attempt='+(+attempt+1))
           form.setFieldValue('password',null);
+        } else if (result?.ok==true) {
+          router.push('/')
         }
-        console.log(result)
         
       }
       
@@ -50,45 +51,52 @@ export default function Login() {
       console.log(attempt)
     },[]);
 
-    useEffect(() => {
-      // console.log(generateSalt())
-      // hashPassword()
-      // let ss = genSalt()
-      // console.log(ss, ss.toString('hex'));
-      // console.log(Uint8Array.from(ss.toString('hex').match(/.{1,2}/g).map((byte) => parseInt(byte, 16))))
+    // useEffect(() => {
+    //   // console.log(generateSalt())
+    //   // hashPassword()
+    //   // let ss = genSalt()
+    //   // console.log(ss, ss.toString('hex'));
+    //   // console.log(Uint8Array.from(ss.toString('hex').match(/.{1,2}/g).map((byte) => parseInt(byte, 16))))
 
-      if (status==='authenticated') {
-        router.push('/')
-      } else if (status=='unauthenticated' && router?.query?.error) {
-        // message.error(router.query.error)
-      }
-    }, [status])
+    //   if (status==='authenticated') {
+    //     // router.push('/')
+    //   } else if (status=='unauthenticated' && router?.query?.error) {
+    //     // message.error(router.query.error)
+    //   }
+    // }, [status])
     
     
     return (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 'calc(100vh - 90px)' }}>
-              <Form form={form} name="login" onFinish={onFinish} layout="vertical">
-                <Form.Item
-                  label="Username"
-                  name="username"
-                  rules={[{ required: true, message: 'Please enter your username' }]}
-                >
-                  <Input />
-                </Form.Item>
-                <Form.Item
-                  label="Password"
-                  name="password"
-                  rules={[{ required: true, message: 'Please enter your password' }]}
-                >
-                  <Input.Password />
-                </Form.Item>
-                <Form.Item extra={<span>{router.query?.attempt>=4?'Please contract administrator to reset the password':''}</span>}>
-                  
-                  <Button type="primary" htmlType="submit" loading={loading} block>
-                    Log in
-                  </Button>
-                </Form.Item>
-              </Form>
+              <Row>
+                <Col span={4} offset={10} style={{textAlign:'center'}}>
+                  <Image src="/images/logo.png" preview={false} style={{width:'70%'}} />
+                </Col>
+                <Col span={4} offset={10}>
+                  <Form form={form} name="login" onFinish={onFinish} layout="vertical">
+                    <Form.Item
+                      label="Username"
+                      name="username"
+                      rules={[{ required: true, message: 'Please enter your username' }]}
+                    >
+                      <Input />
+                    </Form.Item>
+                    <Form.Item
+                      label="Password"
+                      name="password"
+                      rules={[{ required: true, message: 'Please enter your password' }]}
+                    >
+                      <Input.Password />
+                    </Form.Item>
+                    <Form.Item extra={<span>{router.query?.attempt>=4?'Please contract administrator to reset the password':''}</span>}>
+                      
+                      <Button type="primary" htmlType="submit" loading={loading} block>
+                        Log in
+                      </Button>
+                    </Form.Item>
+                  </Form>
+                </Col>
+              </Row>
             </div>
       );
 }

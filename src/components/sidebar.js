@@ -166,40 +166,42 @@ const Sidebar = () => {
     
     
 
-	return (
-		<Sider
-            width={300}
-            style={{background:'rgb(68,114,196)'}}
-            id={'sidebar'}
-        >
-            <Menu
-                id={'menuside'}
-                theme={'dark'}
-                mode="inline"
-                defaultSelectedKeys={['home']}
-                defaultOpenKeys={['datacenter','dataanalytics']}
-                selectedKeys={currentMenuItem}
-                items={_.filter(items, item => {
-                    if (item.children) {
-                        return _.some(item.children, child => {
-                            let showchild = mapUrl(child.href, _.split(session?.user?.permissions,','))
-                            console.log('child', showchild, child.href, _.split(session?.user?.permissions,','));
-                            return showchild;
-                        })
-                    }
-                    if (item?.href) {
-                        let showit = mapUrl(item.href, _.split(session?.user?.permissions,','))
-                        // console.log(item.href);
-                        return showit || item.key=='logout';
-                    }
-                    console.log(item);
-                    return item.key=='logout'
-                })}
-                onClick={handleClick}
-                style={{background: 'rgb(68,114,196)'}}
-            />
-        </Sider>
-	);
+	if (status=='authenticated') {
+        return (
+            <Sider
+                width={300}
+                style={{background:'rgb(68,114,196)'}}
+                id={'sidebar'}
+            >
+                <Menu
+                    id={'menuside'}
+                    theme={'dark'}
+                    mode="inline"
+                    defaultSelectedKeys={['home']}
+                    defaultOpenKeys={['datacenter','dataanalytics']}
+                    selectedKeys={currentMenuItem}
+                    items={_.filter(items, item => {
+                        if (item.children) {
+                            return _.some(item.children, child => {
+                                let showchild = mapUrl(child.href, _.split(session?.user?.permissions,','))
+                                // console.log('child', showchild, child.href, _.split(session?.user?.permissions,','));
+                                return showchild;
+                            })
+                        }
+                        if (item?.href) {
+                            let showit = mapUrl(item.href, _.split(session?.user?.permissions,','))
+                            // console.log(item.href);
+                            return showit || item.key=='logout';
+                        }
+                        // console.log(item);
+                        return item.key=='logout'
+                    })}
+                    onClick={handleClick}
+                    style={{background: 'rgb(68,114,196)'}}
+                />
+            </Sider>
+        );
+    }
 };
 
 export default Sidebar;

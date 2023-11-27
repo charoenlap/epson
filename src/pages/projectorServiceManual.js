@@ -15,9 +15,11 @@ import { LaptopOutlined, NotificationOutlined } from '@ant-design/icons';
 import { DownloadOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import { Select } from 'antd';
+import { getSession } from 'next-auth/react';
+import { withAuth } from '@/utils/middleware';
 const { Search } = Input;
 const { Content,Sider  } = Layout;
-export default function Index() {
+const ProjectorServiceManual = () => {
   const [itemsModel, setItems] = useState([]);
   const [selectedManual, setSelectedManual] = useState(null);
   const [selectedDiagram, setSelectedDiagram] = useState(null);
@@ -91,3 +93,13 @@ export default function Index() {
     </>
   );
 }
+
+export async function getServerSideProps(context) {
+	 const session = await getSession(context);
+	if (session==null) {
+		return { redirect: { destination: '/auth/login?authen', permanent: false } }
+	}
+	return {props:{}}
+}
+
+export default withAuth(ProjectorServiceManual)

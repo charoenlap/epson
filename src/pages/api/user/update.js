@@ -16,7 +16,7 @@ export default async function handler(req, res) {
           console.log(results)
         }
       );
-      connection.end();
+       
 
       console.log(result)
       res.status(200).json({data: encode(result)})
@@ -27,6 +27,6 @@ export default async function handler(req, res) {
     console.error('Error:', error);
     // return res.status(500).json({ error: 'Server error' });
   }finally {
-    connection.end();; // Release the connection back to the pool
+     ; // Release the connection back to the pool
   }
 }
