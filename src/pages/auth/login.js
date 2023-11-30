@@ -69,10 +69,10 @@ export default function Login() {
     return (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 'calc(100vh - 90px)' }}>
               <Row>
-                <Col span={4} offset={10} style={{textAlign:'center'}}>
-                  <Image src="/images/logo.png" preview={false} style={{width:'70%'}} />
+                <Col span={8} offset={8} style={{textAlign:'center'}}>
+                  <Image src="/images/logo.png" preview={false} style={{width:'100%'}} />
                 </Col>
-                <Col span={4} offset={10}>
+                <Col span={8} offset={8}>
                   <Form form={form} name="login" onFinish={onFinish} layout="vertical">
                     <Form.Item
                       label="Username"
