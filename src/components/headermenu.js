@@ -19,7 +19,7 @@ const HeaderMenu = () => {
       }}
     >
       {
-        (status=='authenticated') && (<h3>SMART CS DCA</h3>)
+        (status=='authenticated') && (<h2>SMART CS DCA</h2>)
       }
       
       {/* <div className="demo-logo" /> */}
