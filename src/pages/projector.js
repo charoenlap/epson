@@ -236,4 +236,4 @@ export async function getServerSideProps(context) {
 	return {props:{}}
 }
 
-export default withAuth(ProjectorServiceManual)
+export default withAuth(Projector)
