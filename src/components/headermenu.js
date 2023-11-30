@@ -18,17 +18,7 @@ const HeaderMenu = () => {
         color: '#fff'
       }}
     >
-      {
-        (status=='authenticated') && (<h2>SMART CS DCA</h2>)
-      }
-      
-      {/* <div className="demo-logo" /> */}
-      {/* <Image alt="example" preview={false} src="../../../images/logo.png" width={100}/> */}
-      {/* <Menu
-        theme="dark"
-        mode="horizontal"
-        items={items}
-      /> */}
+      <h2>SMART CS DCA</h2>
     </Header>
   )
 }
