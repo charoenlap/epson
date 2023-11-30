@@ -1,6 +1,6 @@
 import { modelsState, selectModelState } from '@/store/data'
 import {FormOutlined} from "@ant-design/icons";
-import { Form, Card, Button, Modal, Row, Col } from 'antd'
+import { Form, Card, Button, Modal, Row, Col, Typography } from 'antd'
 import {useRecoilState} from 'recoil';
 import React, { useEffect, useState } from 'react'
 import { apiClient } from '../utils/apiClient';
@@ -42,21 +42,23 @@ const MyModel = () => {
     
 
   return (
+    
     <div style={{marginBottom:'5px'}}>
         <Button onClick={()=>setIsModalOpen(!isModalOpen)}><FormOutlined />{_.result(_.find(models, {id:selectModel?.id}),'model_name') || 'Please select type' }</Button>
         <Modal title="Please select type" open={isModalOpen} width={'50%'} footer={null} destroyOnClose={true} onCancel={()=>setIsModalOpen(false)}>
             <Row gutter={[24,24]} justify={'center'}>
             {
                 _.map(models, val => (
-                    <Col span={6}>
+                    <Col span={6} lg={6} md={8} xs={12}>
                         <Button type="link" onClick={()=>{
                             setSelectModel(val);
                             // modal.destroy();
                             setIsModalOpen(false);
                             // router.push('/specification')
-                        }} style={{width:'100%'}}>
-                            <Card cover={<img alt={val.id} src={"images/m"+val.id+".png"} style={{height:'120px'}} />}>
-                                <Meta title={val.model_name} />
+                        }} style={{width:'100%',padding:0}}>
+                            <Card cover={<img alt={val.id} src={"images/m"+val.id+".png"} bodyStyle={{padding:'0'}}/>}>
+                                {/* <Meta title={val.model_name} style={{fontWeight:'bold', maxWidth:'100%', whiteSpace:'break-spaces', textAlign: 'center'}} /> */}
+                                <Typography.Paragraph style={{fontWeight:'bold', margin:0, maxWidth:'100%', whiteSpace:'break-spaces', textAlign: 'center'}}>{val.model_name}</Typography.Paragraph>
                             </Card>
                         </Button>
                     </Col>

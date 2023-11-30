@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, message, Row, Col, Button } from "antd";
+import { Card, message, Row, Col, Button, Typography } from "antd";
 import { withAuth } from "../utils/middleware.js";
 import { apiClient } from "../utils/apiClient.js";
 const { Meta } = Card;
@@ -37,16 +37,17 @@ const Datacenter = () => {
 	return (
 		<>
 			<Card>
-				<Row justify="center">
+				<Row justify="center" gutter={[14,14]}>
 				{
 					_.size(lists)>0 && _.map(lists, val => (
-						<Col span={6}>
+						<Col span={6} lg={6} md={8} xs={12}>
 							<Button type="link" onClick={()=>{
 								setSelectModel(val);
 								router.push('/specification')
-							}} style={{width:'100%'}}>
-								<Card cover={<img alt={val.id} src={"images/m"+val.id+".png"} width={200}/>}>
-									<Meta title={val.model_name} />
+							}} style={{width:'100%',padding:0}}>
+								<Card cover={<img alt={val.id} src={"images/m"+val.id+".png"} />} style={{margin: '5px'}} bodyStyle={{padding:'0'}}>
+									{/* <Meta title={val.model_name} /> */}
+									<Typography.Paragraph style={{fontWeight:'bold', maxWidth:'100%', whiteSpace:'break-spaces', textAlign: 'center'}}>{val.model_name}</Typography.Paragraph>
 								</Card>
 							</Button>
 						</Col>
