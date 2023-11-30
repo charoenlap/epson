@@ -2,9 +2,12 @@ import React from 'react'
 import { HomeOutlined } from '@ant-design/icons';
 import { Layout, theme, Menu } from "antd";
 import{  Image  } from 'antd';
+import { useSession } from 'next-auth/react';
 const { Header } = Layout;
 
 const HeaderMenu = () => {
+  const { data: session, status } = useSession();
+
   return (
     <Header
       style={{
@@ -15,6 +18,10 @@ const HeaderMenu = () => {
         color: '#fff'
       }}
     >
+      {
+        (status=='authenticated') && (<h3>SMART CS DCA</h3>)
+      }
+      
       {/* <div className="demo-logo" /> */}
       {/* <Image alt="example" preview={false} src="../../../images/logo.png" width={100}/> */}
       {/* <Menu
