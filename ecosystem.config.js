@@ -14,7 +14,7 @@ module.exports = {
             repo : 'git@github.com:charoenlap/epson.git',
             path : '/home/charoenlap/epson',
             'pre-deploy' : 'git fetch --all && git reset --hard && git clean  -d  -f .',
-            'post-deploy' : 'pm2 startOrRestart ecosystem.config.js --env production && pm2 save'
+            'post-deploy' : 'npm run build && pm2 startOrRestart ecosystem.config.js --env production && pm2 save'
         },
         dev : {
             user : 'mg',

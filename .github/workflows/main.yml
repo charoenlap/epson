@@ -1,0 +1,20 @@
+name: CI on Master Branch
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Check Node.js version
+        run: node -v
+
+      - name: Deploy with PM2
+        run: sudo pm2 deploy ecosystem.config.js production --force
