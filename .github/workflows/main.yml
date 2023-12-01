@@ -17,4 +17,4 @@ jobs:
         run: node -v
 
       - name: Deploy with PM2
-        run: sudo pm2 deploy ecosystem.config.js production --force
+        run: pm2 deploy ecosystem.config.js production --force
