@@ -17,6 +17,7 @@ import { Select } from 'antd';
 import { withAuth } from '@/utils/middleware';
 import _ from 'lodash';
 import { getSession } from 'next-auth/react';
+import Link from 'next/link';
 const { Search } = Input;
 const { Content,Sider  } = Layout;
 function getItem(label, key, icon, children) {
@@ -29,22 +30,22 @@ function getItem(label, key, icon, children) {
 }
 const items2 = [
   getItem(
-      <a href="/intrlligentDetail">Data Analytic</a>,
+      <Link href="/intrlligentDetail">Data Analytic</Link>,
       'intrlligentDetail',
       <UserOutlined />,
     ),
     getItem(
-      <a href="/checkErrorCode">Check Error Code</a>,
+      <Link href="/checkErrorCode">Check Error Code</Link>,
       'checkErrorCode',
       <LaptopOutlined />,
     ),
     getItem(
-      <a href="/nvram">NVRAM Viewer</a>,
+      <Link href="/nvram">NVRAM Viewer</Link>,
       'nvram',
       <LaptopOutlined />,
     ),
     getItem(
-      <a href="/serviceManual">Service Manual & Diagram</a>,
+      <Link href="/serviceManual">Service Manual & Diagram</Link>,
       'serviceManual',
       <LaptopOutlined />,
     ),
@@ -123,20 +124,20 @@ const ServiceManual = () => {
       <Row justify="center" style={{ margin: '20px' }}>
         <Col span={20} style={{ margin: '10px' }}>
           {selectedManual && (
-            <a href={`upload/manual/${selectedManual}`} target="_blank" rel="noopener noreferrer">
+            <Link href={`upload/manual/${selectedManual}`} target="_blank" rel="noopener noreferrer">
               <Button type="primary" shape="round" icon={<DownloadOutlined />} size="large">
                 Service Manual {selectedManual}
               </Button>
-            </a>
+            </Link>
           )}
         </Col>
         <Col span={20} style={{ margin: '10px' }}>
           {selectedDiagram && (
-            <a href={`upload/diagram/${selectedDiagram}`} target="_blank" rel="noopener noreferrer">
+            <Link href={`upload/diagram/${selectedDiagram}`} target="_blank" rel="noopener noreferrer">
               <Button type="primary" shape="round" icon={<DownloadOutlined />} size="large">
                 Diagram {selectedDiagram}
               </Button>
-            </a>
+            </Link>
           )}
         </Col>
       </Row>

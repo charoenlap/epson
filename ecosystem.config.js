@@ -1,9 +1,10 @@
 module.exports = {
     apps : [{
         name: 'epson_web',
-        script: 'node_modules/.bin/next',
-        args: 'dev',
+        script: 'node_modules/next/dist/bin/next',
+        args: 'start',
         autorestart: true,
+        max_memory_restart: '1G',
     }],
     deploy : {
         production : {
@@ -13,7 +14,16 @@ module.exports = {
             repo : 'git@github.com:charoenlap/epson.git',
             path : '/home/charoenlap/epson',
             'pre-deploy' : 'git fetch --all && git reset --hard && git clean  -d  -f .',
-            'post-deploy' : 'pm2 startOrRestart ecosystem.config.js && pm2 save'
+            'post-deploy' : 'pm2 startOrRestart ecosystem.config.js --env production && pm2 save'
+        },
+        dev : {
+            user : 'mg',
+            host: "localhost",
+            ref  : 'origin/master',
+            repo : 'git@github.com:charoenlap/epson.git',
+            path : 'D:\\fsoftpro\\test',
+            'pre-deploy' : 'git fetch --all && git reset --hard && git clean  -d  -f .',
+            'post-deploy' : 'pm2 startOrRestart ecosystem.config.js --env dev && pm2 save'
         },
     }
 };

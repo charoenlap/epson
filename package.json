@@ -2,9 +2,6 @@
   "name": "callcenter",
   "version": "0.1.0",
   "private": true,
-  "bin": {
-    "callcenter": "./build.js"
-  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -15,7 +12,8 @@
     "pkg": "pkg . --out-dir dist --output build",
     "cleangit": "git fetch origin master && git reset --hard origin/master",
     "fixdeploy": "git fetch --all && git reset --hard && git pull origin master && sudo pm2 restart epson_web",
-    "deploy": "npm run cleangit && pm2 startOrRestart ecosystem.config.js && pm2 save"
+    "deploy": "npm run cleangit && pm2 startOrRestart ecosystem.config.js && pm2 save",
+    "deploy:prod": "next build && pm2 startOrRestart ecosystem.config.js --env production"
   },
   "dependencies": {
     "@ant-design/icons": "^5.1.4",
