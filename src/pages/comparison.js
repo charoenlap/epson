@@ -119,12 +119,15 @@ const Comparison = () => {
     const getSeries = async() => {
         message.loading({key:'series',content:'loading series...'});
         // let resultModel = await apiClient().get('/model');
-        let resultSeries = await apiClient().get('/series',{params:{id_model: selectModel.id}}).catch(e => message.error({key:'series',content:'error series'}));
-        console.log('getSeries',resultSeries.data);
+        // let resultSeries = await apiClient().get('/series',{params:{id_model: selectModel.id}}).catch(e => message.error({key:'series',content:'error series'}));
+        let resultSeries = await apiClient().get('/value',{params:{table: selectModel?.table_compair}}).catch(e => {
+            console.log(e);
+            message.error({key:'series',content:'error content series'})
+        });
         if (_.size(resultSeries?.data)>0) {
             setSeries(resultSeries.data)
-            setOptionSeries(_.map(resultSeries.data, v => ({label:v?.series_name,value:v?.id})))
-            setOptionSeriesRemaining(_.map(resultSeries.data, v => ({label:v?.series_name,value:v?.id})))
+            setOptionSeries(_.map(resultSeries.data, v => ({label:v[1],value:v?.id})))
+            setOptionSeriesRemaining(_.map(resultSeries.data, v => ({label:v[1],value:v?.id})))
             setSelectedSeries([])
             
             message.success({key:'series',content:'load series succes'})
@@ -133,10 +136,11 @@ const Comparison = () => {
 
     const getColumn = async () => {
         message.loading({key:'column',content:'loading column...'});
-        let cols = await apiClient().get('/column',{params:{id_model: selectModel.id}}).catch(e => message.error({key:'column',content:'error content'}));
+        let cols = await apiClient().get('/column',{params:{id_model: selectModel.id}}).catch(e => message.error({key:'column',content:'error content getcolumn'}));
         if (_.size(cols?.data)>0) {
-            setDataSource(_.map(cols.data, v => ({
+            setDataSource(_.map(cols.data, (v,i) => ({
                 key:v.id,
+                keyCol: ++i,
                 head: v.column_name,
                 compare1: '',
                 compare2: '',
@@ -156,7 +160,7 @@ const Comparison = () => {
             setDataSource(_.map(dataSource, v => {
                 return {
                     ...v,
-                    ['compare'+key]: _.find(result.data[0], (val,index) => index==v.key)
+                    ['compare'+key]: _.find(result.data[0], (val,index) => index==v.keyCol)
                 }
             }))
             message.success({key:'series',content:'load series success'})
