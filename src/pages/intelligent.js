@@ -80,7 +80,7 @@ const Intelligent = () => {
                         cover={<Image alt="example" preview={false} src="images/lfp4.png" />}
                     >
                         <div style={{ marginTop: 'auto' }}>
-                            <Meta title="SC-D Series" description="" />
+                            <Meta title="SL-D Series" description="" />
                         </div>
                     </Card>
                 </Link>
