@@ -77,7 +77,7 @@ const OtherCheckErrorCodeLIJ = () => {
         const transformedItems = dataArray.map(item => ({
           key: item.model_name,
           label: item.model_name,
-          typeModel:'RIPs'
+          typeModel:'LIJ'
         }));
         setItems(transformedItems);
       });
@@ -134,7 +134,7 @@ const OtherCheckErrorCodeLIJ = () => {
       </Row>
       <Row justify="center">
         <Col span={20} style={{ margin: '10px' }}>
-          <Link href="/errorCode/WF-C21000_C20750_C20600_Rev.H_Manual/4898026.html" target="_blank">
+          <Link href="/errorCode/WF_C21000_C20750_C20600_Rev.H_Manual/4898026.html" target="_blank">
               <Button type="primary">Search error code</Button>
           </Link>
         </Col>  
