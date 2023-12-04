@@ -41,7 +41,7 @@ const Intelligent = () => {
                 </Link>
             </Col>
             <Col span={5}  style={{ margin: '10px' }}>
-                <Link href="/intrlligentDetail?subtype=SL-P" onClick={()=>setBc([..._.filter(bc, v => !_.startsWith(v.href, '?subtype=')),{title:'SL-P', href:'?subtype=SL-P'}])}>
+                <Link href="/intrlligentDetail?subtype=SL-P" onClick={()=>setBc([..._.filter(bc, v => !_.startsWith(v.href, '?subtype=')),{title:'SC-P', href:'?subtype=SC-P'}])}>
                     <Card
                         hoverable
                         style={{
@@ -50,13 +50,13 @@ const Intelligent = () => {
                         cover={<Image alt="example" preview={false} src="images/lfp2.png" />}
                     >
                         <div style={{ marginTop: 'auto' }}>
-                            <Meta title="SL-P Series" description="" />
+                            <Meta title="SC-P Series" description="" />
                         </div>
                     </Card>
                 </Link>
             </Col>
             <Col span={5}  style={{ margin: '10px' }}>
-                <Link href="/intrlligentDetail?subtype=SC-S" onClick={()=>setBc([..._.filter(bc, v => !_.startsWith(v.href, '?subtype=')),{title:'SC-S', href:'?subtype=SC-S'}])}>
+                <Link href="/intrlligentDetail?subtype=SL-S" onClick={()=>setBc([..._.filter(bc, v => !_.startsWith(v.href, '?subtype=')),{title:'SC-S', href:'?subtype=SC-S'}])}>
                     <Card
                         hoverable
                         style={{
