@@ -38,33 +38,6 @@ const items2 = [
       <LaptopOutlined />,
     ),
 ];
-const columns = [
-  {
-    title: 'Symptom / Detail',
-    dataIndex: 'symptom',
-    key: 'symptom',
-  },
-  {
-    title: 'Remedy',
-    dataIndex: 'remedy',
-    key: 'remedy',
-  },
-  {
-    title: 'Part Code',
-    dataIndex: 'part',
-    key: 'part',
-  },
-];
-const data = [
-  {
-    key: '1',
-    no: '1',
-    symptom: 'Total Print 136,000 ㎡',
-    remedy: 'Replace Print Head',
-    part: 'FA61002 “Print Head”',
-  },
-];
-
 const OtherCheckErrorCodeLIJ = () => {
   const [itemsModel, setItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -134,7 +107,7 @@ const OtherCheckErrorCodeLIJ = () => {
       </Row>
       <Row justify="center">
         <Col span={20} style={{ margin: '10px' }}>
-          <Link href="/errorCode/WF_C21000_C20750_C20600_Rev.H_Manual/4898026.html" target="_blank">
+          <Link href={selectedItem && selectedItem.startsWith('AM') ? '/errorCode/WF_C21000_C20750_C20600_Rev.H_Manual/73105644.html' : '/errorCode/WF_C21000_C20750_C20600_Rev.H_Manual/4898026.html'} target="_blank">
               <Button type="primary">Search error code</Button>
           </Link>
         </Col>  
