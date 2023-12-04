@@ -18,6 +18,7 @@ import { withAuth } from '@/utils/middleware';
 import _ from 'lodash';
 import { getSession } from 'next-auth/react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 const { Search } = Input;
 const { Content,Sider  } = Layout;
 function getItem(label, key, icon, children) {

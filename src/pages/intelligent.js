@@ -41,7 +41,7 @@ const Intelligent = () => {
                 </Link>
             </Col>
             <Col span={5}  style={{ margin: '10px' }}>
-                <Link href="/intrlligentDetail?subtype=SC-P" onClick={()=>setBc([..._.filter(bc, v => !_.startsWith(v.href, '?subtype=')),{title:'SC-P', href:'?subtype=SC-P'}])}>
+                <Link href="/intrlligentDetail?subtype=SL-P" onClick={()=>setBc([..._.filter(bc, v => !_.startsWith(v.href, '?subtype=')),{title:'SL-P', href:'?subtype=SL-P'}])}>
                     <Card
                         hoverable
                         style={{
@@ -50,7 +50,7 @@ const Intelligent = () => {
                         cover={<Image alt="example" preview={false} src="images/lfp2.png" />}
                     >
                         <div style={{ marginTop: 'auto' }}>
-                            <Meta title="SC-P Series" description="" />
+                            <Meta title="SL-P Series" description="" />
                         </div>
                     </Card>
                 </Link>

@@ -19,6 +19,7 @@ import { useRouter } from 'next/router';
 import _ from 'lodash';
 import {useRecoilState} from 'recoil';
 import { breadcrumbState, titleState } from "@/store/page";
+import { getSession } from 'next-auth/react';
 const { Search } = Input;
 const { Content,Sider  } = Layout;
 function getItem(label, key, icon, children) {
