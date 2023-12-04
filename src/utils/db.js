@@ -8,7 +8,7 @@ dotenv.config({ path: process.env.CONFIG_ENV });
 let connection
 
 export async function connectDb() {
-  if (!connection) {
+  if (!connection || connection._closed) {
     const config = {
       host: process.env.DB_HOST || 'localhost',
       user: process.env.DB_USER || 'root',
