@@ -8,7 +8,7 @@ export default async function handler(req, res) {
     const {method,data,params} = decode(req.body)
 
     if (method=='get') {
-        let sql = 'SELECT description FROM '+table;
+        let sql = 'SELECT * FROM '+table;
         let objParam = [];
         if (_.size(params)>0) {
             sql += " WHERE group_p != '' AND "

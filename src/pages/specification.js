@@ -82,12 +82,14 @@ const Specification = () => {
         setSpec({});
         if (compatible) {
             message.loading({ key: key, content: "loading ..." });
-            console.log(compatible)
+            console.log('compatible',compatible);
+			
             let result = await apiClient()
                 .get("/v2/groupspecification", { params: { compatible: '*'+compatible+'*' } })
                 .catch((e) =>
                     message.error({ key: key, content: "error content" })
                 );
+			console.log('result',result);
             if (_.size(result?.data) == 1) {
                 console.log('last',result.data[0]);
                 setSpec(result?.data[0]);
@@ -111,6 +113,7 @@ const Specification = () => {
                 .catch((e) =>
                     message.error({ key: key, content: "error content" })
                 );
+			
             if (_.size(result?.data)>0) {
 				let noneMain = _.filter(result?.data, obj => _.lowerCase(obj.group).indexOf('main') === -1);
 				console.log('noneMain', noneMain);
