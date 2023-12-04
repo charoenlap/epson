@@ -77,15 +77,15 @@ const Specification = () => {
         return _.startsWith(labelLow, inputLow) || inputLow==labelLow || labelLow.indexOf(inputLow) !== -1
     }
 
-	const getSpecification = async (compatible) => {
+	const getSpecification = async (main) => {
 		let key = "specification";
         setSpec({});
-        if (compatible) {
+        if (main) {
             message.loading({ key: key, content: "loading ..." });
-            console.log('compatible',compatible);
+            console.log('main',main);
 			
             let result = await apiClient()
-                .get("/v2/groupspecification", { params: { compatible: '*'+compatible+'*' } })
+                .get("/v2/groupspecification", { params: { description: '*'+main+'*' } })
                 .catch((e) =>
                     message.error({ key: key, content: "error content" })
                 );
@@ -93,7 +93,7 @@ const Specification = () => {
             if (_.size(result?.data) == 1) {
                 console.log('last',result.data[0]);
                 setSpec(result?.data[0]);
-				await getChildSpecification(compatible);
+				await getChildSpecification(main);
                 message.success({ key: key, content: "load " + key + " success" });
             } else {
                 message.error({key:key, content:'fail load'});
@@ -296,7 +296,7 @@ const Specification = () => {
 						width={'100%'}
 						columns={_.chain(childSpec[0])
 						.keys()
-						.filter(key => !_.includes(['id','no'], key))
+						.filter(key => _.includes(['ordercode','description','msrp','msrp_vat'], key))
 						.map(key => ({
 							title: _.startCase(key), // Convert key to title case for column title
 							dataIndex: key,
