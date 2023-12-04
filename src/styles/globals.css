@@ -35,7 +35,7 @@ ul#menuside li ul {
   width: 50% !important;
   height: 50vh !important;
 }
-:where(.css-dev-only-do-not-override-1o0mjj6).ant-card .ant-card-body {
+.ant-card .ant-card-body {
   padding: 15px;
   border-radius: 0 0 8px 8px;
 }
