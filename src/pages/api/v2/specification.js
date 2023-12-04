@@ -4,7 +4,7 @@ import _ from  'lodash';
 
 export default async function handler(req, res) {
     try {
-    const table = 'es_cc_spec';
+    const table = 'es_cc_specification';
     const {method,data,params} = decode(req.body)
 
     if (method=='get') {

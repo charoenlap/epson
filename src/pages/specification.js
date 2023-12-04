@@ -54,7 +54,7 @@ const Specification = () => {
         form.resetFields();
 		// let resultModel = await apiClient().get('/model');
 		let results = await apiClient()
-			.get("/v2/groupspecification", { params: { group: '*main*' } })
+			.get("/v2/groupspecification", { params: { group_p: '*Main*' } })
 			.catch((e) =>
 				message.error({ key: "series", content: "error series" })
 			);
@@ -63,8 +63,8 @@ const Specification = () => {
 			setSeries(results.data);
 			setOptionSeries(
 				_.orderBy(_.map(results.data, (v) => ({
-					label: v?.compatible,
-					value: v?.compatible,
+					label: v?.description,
+					value: v?.description,
 				})), 'label', 'asc')
 			);
 			message.success({ key: "series", content: "load series succes" });
@@ -107,7 +107,7 @@ const Specification = () => {
             message.loading({ key: key, content: "loading ..." });
             console.log(modifiedText)
             let result = await apiClient()
-                .get("/v2/specification", { params: { description: '*'+modifiedText+'*'} })
+                .get("/v2/specification", { params: { compatible: '*'+modifiedText+'*'} })
                 .catch((e) =>
                     message.error({ key: key, content: "error content" })
                 );

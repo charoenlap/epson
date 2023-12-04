@@ -4,14 +4,14 @@ import _ from  'lodash';
 
 export default async function handler(req, res) {
     try {
-    const table = 'es_cc_spec';
+    const table = 'es_cc_specification';
     const {method,data,params} = decode(req.body)
 
     if (method=='get') {
-        let sql = 'SELECT * FROM '+table;
+        let sql = 'SELECT description FROM '+table;
         let objParam = [];
         if (_.size(params)>0) {
-            sql += " WHERE compatible != '' AND "
+            sql += " WHERE group_p != '' AND "
             sql += _.join(_.map(params, (val,key) => {
                 
                 if (_.startsWith(val,'*') || _.endsWith(val,'*')) {
@@ -28,7 +28,8 @@ export default async function handler(req, res) {
                 }
             }), ' AND ');
         }
-        sql += " GROUP BY compatible ORDER BY compatible ASC; "
+        //GROUP BY group_p 
+        sql += " ORDER BY group_p ASC; "
         console.log('sql', sql)
         console.log('params', objParam)
 
