@@ -120,7 +120,7 @@ const Specification = () => {
             message.loading({ key: key, content: "loading ..." });
             console.log(modifiedText)
             let result = await apiClient()
-                .get("/v2/specificationNotMain", { params: { compatible: '*'+modifiedText+'*'} })
+                .get("/v2/specificationNotMain", { params: { compatible: '*'+modifiedText+' /*'} })
                 .catch((e) =>
                     message.error({ key: key, content: "error content" })
                 );
