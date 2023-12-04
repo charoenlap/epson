@@ -61,11 +61,19 @@ const Specification = () => {
         console.log('list', results)
 		if (_.size(results?.data) > 0) {
 			setSeries(results.data);
+			console.log(results.data);
+			console.log(
+				_.orderBy(_.map(results.data, (v) => ({
+					label: v?.model || v?.description+' (Not found Model)',
+					value: v?.model || v?.description+' (Not found Model)',
+					key: v?.id,
+					disabled: !v?.model
+				})), ['disabled', 'label'], ['asc', 'asc']));
 			setOptionSeries(
 				_.orderBy(_.map(results.data, (v) => ({
 					label: v?.model || v?.description+' (Not found Model)',
 					value: v?.model || v?.description+' (Not found Model)',
-					key: v?.model || v?.description+' (Not found Model)',
+					key: v?.id,
 					disabled: !v?.model
 				})), ['disabled', 'label'], ['asc', 'asc'])
 			);
