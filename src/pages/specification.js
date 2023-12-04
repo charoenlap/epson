@@ -64,8 +64,10 @@ const Specification = () => {
 			setOptionSeries(
 				_.orderBy(_.map(results.data, (v) => ({
 					label: v?.model || v?.description+' (Not found Model)',
-					value: v?.model,
-				})), 'label', 'asc')
+					value: v?.model || v?.description+' (Not found Model)',
+					key: v?.model || v?.description+' (Not found Model)',
+					disabled: !v?.model
+				})), ['disabled', 'label'], ['asc', 'asc'])
 			);
 			message.success({ key: "series", content: "load series succes" });
 		}
@@ -74,7 +76,7 @@ const Specification = () => {
     const filterOption = (input, option) => {
         let inputLow = _.join(_.split(_.lowerCase(input),' '),'');
         let labelLow = _.join(_.split(_.lowerCase(option?.label),' '),'');
-        return _.startsWith(labelLow, inputLow) || inputLow==labelLow || labelLow.indexOf(inputLow) !== -1
+        return option?.disabled==false && (_.startsWith(labelLow, inputLow) || inputLow==labelLow || labelLow.indexOf(inputLow) !== -1)
     }
 
 	const getSpecification = async (main) => {
@@ -83,6 +85,7 @@ const Specification = () => {
         if (main) {
             message.loading({ key: key, content: "loading ..." });
             console.log('main',main);
+			setChildSpec([])
 			
             let result = await apiClient()
                 .get("/v2/specificationMain", { params: { model: main } })
@@ -117,7 +120,7 @@ const Specification = () => {
             if (_.size(result?.data)>0) {
 				let noneMain = _.filter(result?.data, obj => _.lowerCase(obj.group).indexOf('main') === -1);
 				console.log('noneMain', noneMain);
-				setChildSpec(noneMain)
+				setChildSpec(_.map(noneMain, v => ({...v, key: v.id})))
                 // setSpec(result?.data[0]);
                 message.success({ key: key, content: "load " + key + " success" });
             } else {
@@ -303,15 +306,8 @@ const Specification = () => {
 							key: key,
 						}))
 						.value()} 
-						dataSource={_.map(childSpec, item =>
-							_.chain(item)
-								.omit(['id', 'no']) // Exclude "id" and "no" fields from each object
-								.mapValues(value => {
-									// Modify values if needed here
-									return value;
-								})
-								.value()
-						)} />}
+						dataSource={childSpec} 
+						/>}
                 </Col>
             </Row>
 		</>
