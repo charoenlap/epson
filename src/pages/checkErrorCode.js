@@ -18,6 +18,7 @@ import { Select } from 'antd';
 import { withAuth } from '@/utils/middleware';
 import { getSession } from 'next-auth/react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 function getItem(label, key, icon, children) {
   return {
     key,
@@ -79,6 +80,7 @@ const data = [];
 const CheckErrorCode = () => {
   const [itemsModel, setItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
+  const router = useRouter();
   const { subtype } = router.query;
   useEffect(() => {
     console.log(subtype);
