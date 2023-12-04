@@ -229,7 +229,7 @@ const Projector = () => {
 }
 
 export async function getServerSideProps(context) {
-	const session = await getsess();
+	const session = await getSession();
 	if (session==null) {
 		return { redirect: { destination: '/auth/login?authen', permanent: false } }
 	}
