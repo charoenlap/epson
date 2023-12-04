@@ -1,5 +1,5 @@
 import { encode, decode } from '../../../utils/encryption';
-import { connectDb } from '../../../utils/db'; // We'll define this utility later
+import { connectDb } from '@/utils/db'; // We'll define this utility later
 import _ from  'lodash';
 
 export default async function handler(req, res) {
