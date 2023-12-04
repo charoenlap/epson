@@ -72,7 +72,7 @@ const OtherServiceManualLIJ = () => {
   const [selectedDiagram, setSelectedDiagram] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
   useEffect(() => {
-    fetch('/api/manual/listModel')
+    fetch('/api/manual/listModelJIL')
       .then(response => response.json())
       .then(data => {
         console.log(data);
@@ -120,53 +120,27 @@ const OtherServiceManualLIJ = () => {
     <>
       <Row justify="center">
         <Col span={20} style={{ margin: '10px' }}>
-        <Select
-          showSearch
-          placeholder="Select a person"
-          optionFilterProp="children"
-          onChange={onChange}
-          options={[
-            {
-              value: 'AM-C4000',
-              label: 'AM-C4000',
-            },
-            {
-              value: 'AM-C5000',
-              label: 'AM-C5000',
-            },
-            {
-              value: 'AM-C6000',
-              label: 'AM-C6000',
-            },
-            {
-              value: 'WF-C20600',
-              label: 'WF-C20600',
-            },
-            {
-              value: 'WF-C20750',
-              label: 'WF-C20750',
-            },
-            {
-              value: 'WF-C21000',
-              label: 'WF-C21000',
-            },
-            {
-              value: 'WF-M21000',
-              label: 'WF-M21000',
-            },
-          ]}
-        />
+          <Select
+            showSearch
+            style={{
+              width: 200,
+            }}
+            placeholder="Search to Select"
+            onChange={handleModelSelect}
+            value={selectedItem}
+          >
+            {itemsModel.map(item => (
+              <Select.Option key={item.key} value={item.label}>
+                {item.label}
+              </Select.Option>
+            ))}
+          </Select>
         </Col>
-      </Row>
-      <Row justify="center">
-        <Col span={20} style={{ margin: '10px' }}>
-              <Button type="primary" onClick={btnClick}>Search error code</Button>
-        </Col>  
       </Row>
       <Row justify="center" style={{ margin: '20px' }}>
         <Col span={20} style={{ margin: '10px' }}>
           {selectedManual && (
-            <a href={`upload/manual/${selectedManual}`} target="_blank" rel="noopener noreferrer">
+            <a href={`${selectedManual}`} target="_blank" rel="noopener noreferrer">
               <Button type="primary" shape="round" icon={<DownloadOutlined />} size="large">
                 Service Manual {selectedManual}
               </Button>
@@ -175,7 +149,7 @@ const OtherServiceManualLIJ = () => {
         </Col>
         <Col span={20} style={{ margin: '10px' }}>
           {selectedDiagram && (
-            <a href={`upload/diagram/${selectedDiagram}`} target="_blank" rel="noopener noreferrer">
+            <a href={`${selectedDiagram}`} target="_blank" rel="noopener noreferrer">
               <Button type="primary" shape="round" icon={<DownloadOutlined />} size="large">
                 Diagram {selectedDiagram}
               </Button>
