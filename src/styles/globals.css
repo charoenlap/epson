@@ -36,6 +36,6 @@ ul#menuside li ul {
   height: 50vh !important;
 }
 :where(.css-dev-only-do-not-override-1o0mjj6).ant-card .ant-card-body {
-  padding: 12px;
+  padding: 5px;
   border-radius: 0 0 8px 8px;
 }
