@@ -21,7 +21,7 @@ export default async function handler(req, res) {
   try {
 
     const [result_query] = await connection.query(
-      'SELECT * FROM es_pt_log WHERE model = ?',
+      'SELECT * FROM es_pt_log WHERE model = ? ORDER BY error_code_postfix DESC',
       [model]
     );
     if (result_query.length === 0) {
@@ -85,26 +85,30 @@ export default async function handler(req, res) {
       }
       if(listErrorDetect!=''){
         for (const error of result_query) {
-          const prefixMatch = currentLine.includes(error.error_code_prefix);
-          const postfixMatchCurrent = currentLine.includes(error.error_code_postfix);
+          let strconcat = currentLine + ' ' + nextLine;
+
+          const prefixMatch = strconcat.includes(error.error_code_prefix);
+          const postfixMatchCurrent = strconcat.includes(error.error_code_postfix);
+          // const postfixMatchNext = nextLine.includes(error.error_code_postfix);
           const postfixMatch = error.error_code_postfix === '' || nextLine.includes(error.error_code_postfix);
           // logData.push({
           //   prefixMatch: prefixMatch,
           //   postfixMatch: postfixMatch,
-          //   currentLine:currentLine
+          //   currentLine:currentLine,
+          //   postfixMatchNext:postfixMatchNext
           // });
           if ((prefixMatch && postfixMatch) || (prefixMatch && postfixMatchCurrent)) {
             const searchText = "[ERR]";
             const searchText2 = "Error Log1 (Latest)";
             const searchText3 = "[WAR]";
-            logData.push({
-              currentLine: currentLine,
-              previousLine: previousLine,
-              nextLine:nextLine,
-              nextLine2:nextLine2,
-              nextLine3:nextLine3,
-              error_code_prefix: error.error_code_prefix
-            });
+            // logData.push({
+            //   currentLine: currentLine,
+            //   previousLine: previousLine,
+            //   nextLine:nextLine,
+            //   nextLine2:nextLine2,
+            //   nextLine3:nextLine3,
+            //   error_code_prefix: error.error_code_prefix
+            // });
             if (currentLine.includes(searchText) || currentLine.includes(searchText2) || currentLine.includes(searchText3)) {
               no += 1;
               const pattern = /T (\d+h\d+m\d+s)/;
@@ -126,6 +130,14 @@ export default async function handler(req, res) {
               if (match3 && match3[1]) {
                 timeString = match3[1];
               }
+              // logData.push({
+              //   prefixMatch: prefixMatch,
+              //   postfixMatch: postfixMatch,
+              //   currentLine:currentLine,
+              //   postfixMatchNext:postfixMatchNext,
+              //   timeString:timeString
+              // });
+              
               errorData.push({
                 key: no,
                 no: timeString,
