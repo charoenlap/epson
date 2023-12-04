@@ -54,7 +54,7 @@ const Specification = () => {
         form.resetFields();
 		// let resultModel = await apiClient().get('/model');
 		let results = await apiClient()
-			.get("/v2/groupspecification", { params: { group_p: '*Main*' } })
+			.get("/v2/specificationMain", { params: { type: '*'+selectModel.model_name+'*' } })
 			.catch((e) =>
 				message.error({ key: "series", content: "error series" })
 			);
@@ -63,8 +63,8 @@ const Specification = () => {
 			setSeries(results.data);
 			setOptionSeries(
 				_.orderBy(_.map(results.data, (v) => ({
-					label: v?.description,
-					value: v?.description,
+					label: v?.model || v?.description+' (Not found Model)',
+					value: v?.model,
 				})), 'label', 'asc')
 			);
 			message.success({ key: "series", content: "load series succes" });
@@ -85,7 +85,7 @@ const Specification = () => {
             console.log('main',main);
 			
             let result = await apiClient()
-                .get("/v2/groupspecification", { params: { description: '*'+main+'*' } })
+                .get("/v2/specificationMain", { params: { model: main } })
                 .catch((e) =>
                     message.error({ key: key, content: "error content" })
                 );
