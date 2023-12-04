@@ -31,7 +31,7 @@ export default async function handler(req, res) {
         const [result] = await connection.query(sql, [objParam]);
         
          
-        console.log(result)
+        // console.log(result)
         res.status(200).json({data: encode(result)})
     } else {
         res.status(405).send('Method not allowed')

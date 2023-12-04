@@ -4,10 +4,16 @@ import _ from  'lodash';
 
 export default async function handler(req, res) {
     try {
-    const table = 'es_cc_val';
+    let table = 'es_cc_val';
     const {method,data,params} = decode(req.body)
 
     if (method=='get') {
+        if (params?.table) {
+            table = params.table;
+            delete params.table;
+        } else {
+            res.status(404).send('Please send table')
+        }
         let sql = 'SELECT * FROM '+table;
         let objParam = [];
         if (_.size(params)>0) {
@@ -31,7 +37,7 @@ export default async function handler(req, res) {
         const [result] = await connection.query(sql, [objParam]);
         
          
-        // console.log(result)
+        console.log(result)
         res.status(200).json({data: encode(result)})
     } else {
         res.status(405).send('Method not allowed')

@@ -120,6 +120,7 @@ const Comparison = () => {
         message.loading({key:'series',content:'loading series...'});
         // let resultModel = await apiClient().get('/model');
         let resultSeries = await apiClient().get('/series',{params:{id_model: selectModel.id}}).catch(e => message.error({key:'series',content:'error series'}));
+        console.log('getSeries',resultSeries.data);
         if (_.size(resultSeries?.data)>0) {
             setSeries(resultSeries.data)
             setOptionSeries(_.map(resultSeries.data, v => ({label:v?.series_name,value:v?.id})))
@@ -147,12 +148,15 @@ const Comparison = () => {
 
     const getValue = async(key,idseries) => {
         message.loading({key:'series',content:'loading series...'});
-        let result = await apiClient().get('/value',{params:{id_series: idseries}}).catch(e => message.error({key:'series',content:'error content'}));
+        if (!selectModel?.table_compair) {
+            message.error({key:'series',content:'Table not found'})
+        }
+        let result = await apiClient().get('/value',{params:{id: idseries, table: selectModel?.table_compair}}).catch(e => message.error({key:'series',content:'error content'}));
         if (_.size(result?.data)>0) {
             setDataSource(_.map(dataSource, v => {
                 return {
                     ...v,
-                    ['compare'+key]: _.result(_.find(result.data, ({id_column:v.key})), 'val')
+                    ['compare'+key]: _.find(result.data[0], (val,index) => index==v.key)
                 }
             }))
             message.success({key:'series',content:'load series success'})
@@ -176,11 +180,11 @@ const Comparison = () => {
     }, [selectedSeries])
     
 
-    useEffect(()=>{
-        console.log('selectedSeries',selectedSeries)
-        console.log('optionSeries',optionSeries)
-        console.log('optionSeriesRemaining',optionSeriesRemaining)
-    },[selectedSeries, optionSeries, optionSeriesRemaining])
+    // useEffect(()=>{
+    //     console.log('selectedSeries',selectedSeries)
+    //     console.log('optionSeries',optionSeries)
+    //     console.log('optionSeriesRemaining',optionSeriesRemaining)
+    // },[selectedSeries, optionSeries, optionSeriesRemaining])
 
     const addColumn = () => {
         let index = parseInt(_.size(tableColumn));
