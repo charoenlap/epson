@@ -111,7 +111,7 @@ const OtherServiceManual = () => {
       <Row justify="center" style={{ margin: '20px' }}>
         <Col span={20} style={{ margin: '10px' }}>
           {selectedManual && (
-            <a href={`upload/manual/${selectedManual}`} target="_blank" rel="noopener noreferrer">
+            <a href={`${selectedManual}`} target="_blank" rel="noopener noreferrer">
               <Button type="primary" shape="round" icon={<DownloadOutlined />} size="large">
                 Service Manual {selectedManual}
               </Button>
@@ -120,7 +120,7 @@ const OtherServiceManual = () => {
         </Col>
         <Col span={20} style={{ margin: '10px' }}>
           {selectedDiagram && (
-            <a href={`upload/diagram/${selectedDiagram}`} target="_blank" rel="noopener noreferrer">
+            <a href={`${selectedDiagram}`} target="_blank" rel="noopener noreferrer">
               <Button type="primary" shape="round" icon={<DownloadOutlined />} size="large">
                 Diagram {selectedDiagram}
               </Button>
