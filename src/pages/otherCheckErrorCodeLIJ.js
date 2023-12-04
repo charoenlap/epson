@@ -107,7 +107,7 @@ const OtherCheckErrorCodeLIJ = () => {
       </Row>
       <Row justify="center">
         <Col span={20} style={{ margin: '10px' }}>
-          <Link href={selectedItem && selectedItem.startsWith('AM') ? '/errorCode/WF_C21000_C20750_C20600_Rev.H_Manual/73105644.html' : '/errorCode/WF_C21000_C20750_C20600_Rev.H_Manual/4898026.html'} target="_blank">
+          <Link href={selectedItem && selectedItem.startsWith('AM') ? '/errorCode/content/WF_C21000_C20750_C20600_Rev.H_Manual/73105644.html' : '/errorCode/content/WF_C21000_C20750_C20600_Rev.H_Manual/4898026.html'} target="_blank">
               <Button type="primary">Search error code</Button>
           </Link>
         </Col>  
