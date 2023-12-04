@@ -11,7 +11,7 @@ export default async function handler(req, res) {
         let sql = 'SELECT * FROM '+table;
         let objParam = [];
         if (_.size(params)>0) {
-            sql += " WHERE group_p != '' AND "
+            sql += " WHERE group_p != '' AND group_p LIKE '%Main%' AND  "
             sql += _.join(_.map(params, (val,key) => {
                 
                 if (_.startsWith(val,'*') || _.endsWith(val,'*')) {
@@ -28,8 +28,6 @@ export default async function handler(req, res) {
                     return key+' = ?';
                 }
             }), ' AND ');
-            console.log('sql', sql)
-            console.log('params', objParam)
         }
         //GROUP BY group_p 
         sql += " ORDER BY group_p ASC; "
