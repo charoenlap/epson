@@ -17,6 +17,7 @@ import { Modal } from 'antd';
 import Link from 'next/link';
 import { getSession } from 'next-auth/react';
 import { withAuth } from '@/utils/middleware';
+import { useRouter } from 'next/router';
 const { Content,Sider  } = Layout;
 const {Option} = Select;
 function getItem(label, key, icon, children) {
@@ -231,7 +232,7 @@ const Projector = () => {
 export async function getServerSideProps(context) {
 	const session = await getSession();
 	if (session==null) {
-		return { redirect: { destination: '/auth/login?authen', permanent: false } }
+		// return { redirect: { destination: '/auth/login?authen', permanent: false } }
 	}
 	return {props:{}}
 }
