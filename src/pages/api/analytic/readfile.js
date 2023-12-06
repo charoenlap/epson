@@ -85,7 +85,7 @@ export default async function handler(req, res) {
       }
       if(listErrorDetect!=''){
         for (const error of result_query) {
-          let strconcat = currentLine + ' ' + nextLine;
+          let strconcat = currentLine + ' ' + nextLine + ' ' + nextLine2;
 
           const prefixMatch = strconcat.includes(error.error_code_prefix);
           const postfixMatchCurrent = strconcat.includes(error.error_code_postfix);
