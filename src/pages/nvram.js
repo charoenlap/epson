@@ -36,6 +36,7 @@ const Nvram = () => {
   const { subtype } = router.query;
   const [itemsModel, setItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedRVAM, setSelectedNVRAM] = useState(null);
   useEffect(() => {
     fetch(`/api/manual/listModelSC?subtype=${subtype}`)
       .then(response => response.json())
@@ -49,10 +50,16 @@ const Nvram = () => {
           nvram: item.nvram,
         }));
         setItems(transformedItems);
+        console.log(transformedItems);
       });
   }, [subtype]);
-  const handleModelSelect = item => {
-    setSelectedItem(item);
+  const handleModelSelect = value => {
+    // setSelectedItem(item);
+    const selectedItem = itemsModel.find(item => item.label === value);
+    setSelectedItem(value);
+    // setSelectedManual(selectedItem.manual);
+    // setSelectedDiagram(selectedItem.diagram);
+    setSelectedNVRAM(selectedItem.nvram);
   };
   const {
     token: { colorBgContainer },
@@ -81,8 +88,8 @@ const Nvram = () => {
       </Row>
       <Row justify="center" style={{ margin: '20px' }}>
         <Col span={20} style={{ margin: '10px' }}>
-        {selectedItem && (
-            <a href={`upload/nvram/${selectedItem}.zip`} target="_blank" rel="noopener noreferrer">
+        {selectedRVAM && (
+            <a href={`${selectedRVAM}`} target="_blank" rel="noopener noreferrer">
               <Button type="primary" shape="round" icon={<DownloadOutlined />} size="large">
               Download
               </Button>
