@@ -7,17 +7,27 @@ import { selectModelState } from "@/store/data";
 import { useRecoilState } from "recoil";
 import { useRouter } from "next/router.js";
 import _ from 'lodash';
-import { getSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 
 const Datacenter = () => {
+    const { data: session, status } = useSession();
 	const [selectModel,setSelectModel] = useRecoilState(selectModelState);
 	const router = useRouter();
     const [lists, setLists] = useState([]);
 
     const getLists = async () => {
         message.loading({key:'init',content:'loading...'})
-        const models = await apiClient().get('/model');
-        console.log(models);
+        let models = await apiClient().get('/model');
+		if (_.some(_.split(session?.user?.permissions, ','), f => _.startsWith(f, 'model:'))) {
+			let permissionModel = _.map(_.filter(_.split(session?.user?.permissions, ','), f => _.startsWith(f, 'model:')), v => _.toLower(_.last(_.split(v, ':'))));
+			console.log('Found Permission Model', permissionModel);
+			// console.log(_.filter(models.data, f => _.includes(permissionModel, _.toLower(f.model_name))))
+			let modelOnlyPermission = _.filter(models.data, f => _.includes(permissionModel, _.toLower(f.model_name)));
+			models.data = modelOnlyPermission
+			if (modelOnlyPermission) {
+				console.error('Permission Model Not Match', permissionModel)
+			}
+		}
         setLists(models.data)
         if (_.size(models?.data)>0) {
             message.success({key:'init',content:'Load model success'})
@@ -28,11 +38,11 @@ const Datacenter = () => {
 
     useEffect(() => {
         (async()=>{
-            if (_.size(lists)==0) {
+            if (_.size(lists)==0 && session) {
                 await getLists();
             }
         })()
-    }, [lists])
+    }, [lists, session])
 
 	return (
 		<>
