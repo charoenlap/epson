@@ -61,18 +61,20 @@ const Sidebar = () => {
     const findCurrent = (pathname) => {
         let selected = []
         _.map(items, (item) => {
-            if (item.href==pathname) { 
+            // console.log(item,pathname)
+            if (_.startsWith(item.href,pathname)) { 
                 selected = [item.key];
             }
             if (item.children) {
                 _.map(item.children, child => {
                     // console.log(pathname,child.href);
-                    if (child.href == pathname) {
-                        selected = [item.key, child.key];
+                    if (_.startsWith(child.href, pathname)) {
+                        selected = [child.key, item.key];
                     }
                 })
             }
         });
+        console.log('selected', selected)
         setCurrentMenuItem(selected);
     }
     

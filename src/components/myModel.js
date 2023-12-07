@@ -5,10 +5,12 @@ import {useRecoilState} from 'recoil';
 import React, { useEffect, useState } from 'react'
 import { apiClient } from '../utils/apiClient';
 import _ from 'lodash';
+import { useSession } from "next-auth/react";
 import { useRouter } from 'next/router';
 const {Meta} = Card;
 
 const MyModel = () => {
+    const { data: session, status } = useSession();
     const [models,setModels] = useRecoilState(modelsState);
     const [selectModel, setSelectModel] = useRecoilState(selectModelState)
     const [lists, setLists] = useState([])
@@ -16,7 +18,17 @@ const MyModel = () => {
     const router = useRouter();
     
     const getLists = async () => {
-        const results = await apiClient().get('/model');
+        let results = await apiClient().get('/model');
+        if (_.some(_.split(session?.user?.permissions, ','), f => _.startsWith(f, 'model:'))) {
+			let permissionModel = _.map(_.filter(_.split(session?.user?.permissions, ','), f => _.startsWith(f, 'model:')), v => _.toLower(_.last(_.split(v, ':'))));
+			console.log('Found Permission Model', permissionModel);
+			// console.log(_.filter(models.data, f => _.includes(permissionModel, _.toLower(f.model_name))))
+			let modelOnlyPermission = _.filter(results.data, f => _.includes(permissionModel, _.toLower(f.model_name)));
+			results.data = modelOnlyPermission
+			if (modelOnlyPermission) {
+				console.error('Permission Model Not Match', permissionModel)
+			}
+		}
         console.log(results.data)
         setModels(results.data)
         setLists(results.data)
@@ -24,12 +36,11 @@ const MyModel = () => {
 
     useEffect(() => {
         (async()=>{
-            if (_.size(lists)==0) {
+            if (_.size(lists)==0 && session) {
                 await getLists();
             }
         })()
-        
-    }, [])
+    }, [lists, session])
     
     useEffect(() => {
         console.log(models, selectModel)
