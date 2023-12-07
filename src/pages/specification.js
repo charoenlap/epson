@@ -107,7 +107,8 @@ const Specification = () => {
 				await getChildSpecification(main);
                 message.success({ key: key, content: "load " + key + " success" });
             } else {
-                message.error({key:key, content:'fail load'});
+                // message.error({key:key, content:'fail load'});
+				console.error('Not found data')
             }
         }
 	};
@@ -132,7 +133,8 @@ const Specification = () => {
                 // setSpec(result?.data[0]);
                 message.success({ key: key, content: "load " + key + " success" });
             } else {
-                message.error({key:key, content:'fail load'});
+                // message.error({key:key, content:'fail load'});
+				console.error('Not found data')
             }
         }
 	}
