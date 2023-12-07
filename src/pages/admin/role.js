@@ -135,7 +135,7 @@ const Role = () => {
 	}
 
     const updateHandler = async (values) => {
-		values.updated_at = dayjs().toISOString();
+		values.updated_at = dayjs().format('YYYY-MM-DD HH:mm:ss');
 		let find = values?.id;
 		values = _.omit(values,['id']); // username cannot change
 		let result = await apiClient().put('/role', values, {params: {id: find}});
@@ -151,7 +151,7 @@ const Role = () => {
     const createHandler = async (values) => {
 		let check = await apiClient().get('/role', {params:{['r.name']:values?.name, ['r.del']: 0}});
 		if (_.size(check?.data)==0) {
-			values.created_at = dayjs().toISOString();
+			values.created_at = dayjs().format('YYYY-MM-DD HH:mm:ss');
 			let result = await apiClient().post('/role', values);
 			if (result?.data?.insertId) {
 				message.success('Create Success');
@@ -166,8 +166,8 @@ const Role = () => {
     }
 
     const deleteHandler = async (values) => {
-		values.updated_at = dayjs().toISOString();
-		let result = await apiClient().delete("/role", {params:{id:values?.id}, data: {updated_at: dayjs().toISOString()}});
+		values.updated_at = dayjs().format('YYYY-MM-DD HH:mm:ss');
+		let result = await apiClient().delete("/role", {params:{id:values?.id}, data: {updated_at: dayjs().format('YYYY-MM-DD HH:mm:ss')}});
 		if (result?.data?.affectedRows>0) {
 			message.success('Delete Success');
 			await fetchData()

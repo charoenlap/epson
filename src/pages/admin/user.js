@@ -85,9 +85,9 @@ const FormUser = ({ initialValues, onSubmit, mode, close }) => {
 			if (mode=='create') {
 				let newSalt = generateSalt();
 				values.salt = newSalt;
-				values.created_at = dayjs().toISOString();
+				values.created_at = dayjs().format('YYYY-MM-DD HH:mm:ss');
 			} else {
-				values.updated_at = dayjs().toISOString();
+				values.updated_at = dayjs().format('YYYY-MM-DD HH:mm:ss');
 			}
 			onSubmit(values);
 		});
@@ -144,7 +144,7 @@ const User = () => {
 	}
 
     const updateHandler = async (values) => {
-		values.updated_at = dayjs().toISOString();
+		values.updated_at = dayjs().format('YYYY-MM-DD HH:mm:ss');
 		let find = values?.id;
 		values = _.omit(values,['id','username']); // username cannot change
 		let result = await apiClient().put('/user', values, {params: {id: find}});
@@ -160,7 +160,7 @@ const User = () => {
     const createHandler = async (values) => {
 		let check = await apiClient().get('/user', {params:{['u.username']: _.trim(values?.username), ['u.del']: 0}});
 		if (_.size(check?.data)==0) {
-			values.created_at = dayjs().toISOString();
+			values.created_at = dayjs().format('YYYY-MM-DD HH:mm:ss');
 			values.status = 'changepassword'
 			let result = await apiClient().post('/user', values);
 			if (result?.data?.insertId) {
@@ -176,8 +176,8 @@ const User = () => {
     }
 
     const deleteHandler = async (values) => {
-		values.updated_at = dayjs().toISOString();
-		let result = await apiClient().delete("/user", {params:{id:values?.id}, data: {updated_at: dayjs().toISOString()}});
+		values.updated_at = dayjs().format('YYYY-MM-DD HH:mm:ss');
+		let result = await apiClient().delete("/user", {params:{id:values?.id}, data: {updated_at: dayjs().format('YYYY-MM-DD HH:mm:ss')}});
 		if (result?.data?.affectedRows>0) {
 			message.success('Delete Success');
 			await fetchData()

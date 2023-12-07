@@ -65,7 +65,7 @@ const Permission = () => {
 	const [columns, setColumns] = useState([]);
 
     const updateHandler = async (values) => {
-		values.updated_at = dayjs().toISOString();
+		values.updated_at = dayjs().format('YYYY-MM-DD HH:mm:ss');
 		let find = values?.id;
 		values = _.omit(values,['id']); // username cannot change
 		let result = await apiClient().put('/permission', values, {params: {id: find}});
@@ -81,7 +81,7 @@ const Permission = () => {
     const createHandler = async (values) => {
 		let check = await apiClient().get('/permission', {params:{['name']:values?.name, ['del']: 0}});
 		if (_.size(check?.data)==0) {
-			values.created_at = dayjs().toISOString();
+			values.created_at = dayjs().format('YYYY-MM-DD HH:mm:ss');
 			let result = await apiClient().post('/permission', values);
 			if (result?.data?.insertId) {
 				message.success('Create Success');
@@ -96,8 +96,8 @@ const Permission = () => {
     }
 
     const deleteHandler = async (values) => {
-		values.updated_at = dayjs().toISOString();
-		let result = await apiClient().delete("/permission", {params:{id:values?.id}, data: {updated_at: dayjs().toISOString()}});
+		values.updated_at = dayjs().format('YYYY-MM-DD HH:mm:ss');
+		let result = await apiClient().delete("/permission", {params:{id:values?.id}, data: {updated_at: dayjs().format('YYYY-MM-DD HH:mm:ss')}});
 		if (result?.data?.affectedRows>0) {
 			message.success('Delete Success');
 			await fetchData()
