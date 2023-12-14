@@ -81,8 +81,8 @@ const FormUser = ({ initialValues, onSubmit, mode, close }) => {
 	const handleSubmit = () => {
 		form.validateFields().then((values) => {
 			
-			values.status = 'active';
 			if (mode=='create') {
+				values.status = 'active';
 				let newSalt = generateSalt();
 				values.salt = newSalt;
 				values.created_at = dayjs().format('YYYY-MM-DD HH:mm:ss');
