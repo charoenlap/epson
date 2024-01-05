@@ -1,5 +1,4 @@
 import { connectDb } from '../../../utils/db'; // We'll define this utility later
-import fs from 'fs';
 import _ from 'lodash';
 import { encode } from '../../../utils/encryption';
 
@@ -24,11 +23,13 @@ export default async function handler(req, res) {
         })
         csvContent += `${values.join(',')}\n`;
     })
+    // Set response headers to indicate file download
+    const fileName = `${tableName}.csv`;
+    res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+    res.setHeader('Content-Type', 'text/csv');
 
-    fs.writeFileSync(outputPath, csvContent, { flag: 'w' });
-
-
-    res.status(200).json({ data: encode('Table data dumped successfully to CSV') });
+    // Send the CSV content as the response
+    res.send(encode(csvContent));
   } catch (error) {
     console.error('Error:', error);
     return res.status(500).json({ error: 'Server error' });
