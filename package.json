@@ -12,7 +12,7 @@
     "pkg": "pkg . --out-dir dist --output build",
     "cleangit": "git fetch origin master && git reset --hard origin/master",
     "fixdeploy": "git fetch --all && git reset --hard && git pull origin master && sudo pm2 restart epson_web",
-    "deploy": "npm run cleangit && next build && pm2 startOrRestart ecosystem.config.js --env production"
+    "deploy": "npm run cleangit && npm ci && next build && pm2 startOrRestart ecosystem.config.js --env production"
   },
   "dependencies": {
     "@ant-design/icons": "^5.1.4",
@@ -22,7 +22,6 @@
     "bootstrap": "^4.5.3",
     "busboy": "^1.6.0",
     "callcenter": "^1.0.0",
-    "child_process": "^1.0.2",
     "crypto": "^1.0.1",
     "crypto-js": "^4.1.1",
     "dayjs": "^1.11.10",
@@ -50,7 +49,6 @@
     "react-toastify": "^9.1.3",
     "recoil": "^0.7.7",
     "swr": "^2.2.2",
-    "util": "^0.12.5",
     "uuid": "^9.0.0",
     "xlsx": "^0.18.5"
   },
