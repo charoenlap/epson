@@ -8,7 +8,6 @@ export default async function handler(req, res) {
     const connection = await connectDb();
 
     const tableName = 'ep_permissions';
-    const outputPath = 'D:/fsoftpro/epson/output/export.csv'
     const [columns] = await connection.query(`SHOW COLUMNS FROM ${tableName}`);
     const columnNames = columns.map((column) => `${column.Field}`).join(',');
 
