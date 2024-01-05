@@ -1,4 +1,4 @@
-import { connectDb } from '../../utils/db'; // We'll define this utility later
+import { connectDb } from '../../../utils/db'; // We'll define this utility later
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
