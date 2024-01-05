@@ -60,6 +60,7 @@ const AdminLayout = ({ children }) => {
 									label: "Permission",
 									href: "/admin/permission",
 								},
+								// { key: "dump", label: "Manage Table", href: "/admin/dump" },
 								{ key: "out", label: "Logout", href: "/admin/logout" },
 							], find => mapUrl(find.href, _.split(session?.user?.permissions,',')) || find.key=='out')}
 							onClick={handleClick}

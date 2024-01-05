@@ -18,14 +18,23 @@ export const drawerContentState = atom({
 	default: null, // Initial content, null or default content
 });
 
+// Atom for drawer content
+export const drawerWidthState = atom({
+	key: "drawerWidthState",
+	default: '50%', // Initial content, null or default content
+});
+
 export const initDrawerState = selector({
 	key: "initDrawerState",
-	set: ({ set }, { title, content }) => {
+	set: ({ set }, { title, content, width='50%' }) => {
 		if (content) {
 			set(drawerContentState, content);
 		}
 		if (title) {
 			set(drawerTitleState, title);
+		}
+		if (width) {
+			set(drawerWidthState, width);
 		}
 		set(drawerOpenState, true);
 	},
@@ -43,11 +52,13 @@ export const closeDrawerState = selector({
         reset(drawerContentState);
         reset(drawerTitleState);
 		reset(drawerOpenState);
+		reset(drawerWidthState);
 	},
     get: ({ get }) => {
       const title = get(drawerTitleState);
       const content = get(drawerContentState);
       const open = get(drawerOpenState);
+	  const width = get(drawerWidthState);
   
       return { title, content, open };
     },
