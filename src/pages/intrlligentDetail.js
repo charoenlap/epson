@@ -120,17 +120,7 @@ const columns = [
     title: 'End of life',
     dataIndex: 4,
     key: 'col-4',
-  },
-  {
-    title: '',
-    dataIndex: 5,
-    key: 'col-5',
-  },
-  {
-    title: '',
-    dataIndex: 6,
-    key: 'col-6',
-  },
+  }
 ];
 const columnsResult = [
   {
@@ -203,7 +193,7 @@ const IntelligentDetail = () => {
   
   const handleModelSelect = model => {
     setSelectedModel(model);
-    console.log(model);
+    
     // setSelectedModel([...selectedModel, model]);
   };
 
@@ -220,19 +210,21 @@ const IntelligentDetail = () => {
       }
       const formData = new FormData();
       formData.append('file', file);
-      console.log('start send axios');
+      formData.append('selectedModel', selectedModel);
+      
     
       const response = await axios.post('/api/uploadExcel', formData);
+      // console.log('response',response);
       setResponseData(response);
-      console.log('get data');
-      console.log(response);
+      
+      
+      
       let responseData = [];
       if (response.data && response.data.data && Array.isArray(response.data.data)) {
-        // console.log(response.data.data);
         setResponseData(response.data.data);
         setErrorData(response.data.errorData);
-        console.log(selectedModel);
-        console.log(response.data.errorData[0].symptom);
+        
+        
         let symptomResponse = response.data.errorData[0].symptom;
         try {
           
@@ -240,23 +232,30 @@ const IntelligentDetail = () => {
             model: selectedModel,
             errorCode: symptomResponse,
           });
-          console.log(responseErr);
-          responseData = responseErr.data.map(item => ({
-            key: item.id, // Unique key for each row
-            symptom: item.error_name,
-            remedy: item.remedy,
-            part: item.part_check,
-          }));
-          console.log('>>>');
-          console.log(responseData);
-          setTableData(responseData);
+          
+          // if(responseErr.length>0){
+            responseData = responseErr.data.map(item => ({
+              key: item.id, // Unique key for each row
+              symptom: item.error_name,
+              remedy: item.remedy,
+              part: item.part_check,
+            }));
+            
+            setTableData(responseData);
+          // }
+          
         } catch (error) {
           console.error(error);
         }
-        const mergedData = [...responseData, ...response.data.errorShow];
+        
+        
+        let mergedData = []
+        mergedData = [...responseData, ...response.data.errorShow];
+        
+        
         setTableData(mergedData);
       } else {
-        console.log('Empty response data or invalid format');
+        
         setResponseData([]); // Set an empty array if no response data or invalid format
       }
     } catch (error) {
@@ -264,15 +263,15 @@ const IntelligentDetail = () => {
       setResponseData([]); // Set an empty array if an error occurs
     }
 
-    console.log('end send axios');
+    
   };
 
   const onChange = (pagination, filters, sorter, extra) => {
-    console.log('params', pagination, filters, sorter, extra);
+    
   };
 
   const filteredResponseData = responseData.filter(row => row.length > 0);
-  const {
+    const {
     token: { colorBgContainer },
   } = theme.useToken();
   const handleReset = () => {
@@ -340,7 +339,11 @@ const IntelligentDetail = () => {
       </Row>
       <Row justify="center" style={{ margin: '20px' }}>
         <Col span={20} style={{ margin: '10px' }}>
+        {errorDataTable.length >0? (
           <Table columns={columnsResult} dataSource={errorDataTable} />
+          ) : (
+            <div>No error data to display.</div>
+        )}
         </Col>
       </Row>
     </>
